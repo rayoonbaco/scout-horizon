@@ -1,0 +1,195 @@
+[
+  {
+    "id": "gdelt_doc_v2_discovery",
+    "label": "GDELT 2.0 Doc API (Discovery Firehose)",
+    "type": "api",
+    "access": "free",
+    "url_or_endpoint": "https://api.gdeltproject.org/api/v2/doc/doc",
+    "query_template": "query={QUERY}&mode=ArtList&format=json&maxrecords=250&sort=HybridRel&startdatetime={START_UTC}&enddatetime={END_UTC}",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "regulatory",
+      "cybersecurity",
+      "science_trends",
+      "margin_protection",
+      "construction_capex"
+    ],
+    "tags": [
+      "discovery",
+      "news_search",
+      "high_volume",
+      "dedupe_required"
+    ],
+    "reliability": 0.72,
+    "update_frequency": "hourly (rolling window)",
+    "rate_limit_notes": "Throttle + cache; incremental windows (15–60m). Backoff on 429/5xx.",
+    "dedupe_key_strategy": "canonical_url_hash; fallback (domain+title+date) hash",
+    "normalization_mapping_notes": "title/url/seendate/snippet → event fields; account/topic/region via query context + extraction."
+  },
+  {
+    "id": "sec_company_tickers_exchange",
+    "label": "SEC company_tickers_exchange.json (Ticker↔CIK mapping)",
+    "type": "dataset",
+    "access": "free",
+    "url_or_endpoint": "https://www.sec.gov/files/company_tickers_exchange.json",
+    "query_template": "",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "margin_protection"
+    ],
+    "tags": [
+      "sec",
+      "lookup"
+    ],
+    "reliability": 0.95,
+    "update_frequency": "weekly",
+    "rate_limit_notes": "Cache 7d. Respect SEC fair access; set descriptive User-Agent.",
+    "dedupe_key_strategy": "dataset_version_hash",
+    "normalization_mapping_notes": "Lookup-only dataset."
+  },
+  {
+    "id": "sec_submissions_by_cik",
+    "label": "SEC EDGAR Submissions JSON (filings per CIK)",
+    "type": "api",
+    "access": "free",
+    "url_or_endpoint": "https://data.sec.gov/submissions/CIK{CIK10}.json",
+    "query_template": "CIK10={CIK10}; forms={FORMS}; start={START_DATE}; end={END_DATE}",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "margin_protection",
+      "construction_capex",
+      "cybersecurity",
+      "regulatory"
+    ],
+    "tags": [
+      "sec",
+      "edgar",
+      "filings",
+      "official"
+    ],
+    "reliability": 0.96,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Throttle (<=2 req/sec). Cache 24h. Always send descriptive User-Agent.",
+    "dedupe_key_strategy": "sec_accession_number",
+    "normalization_mapping_notes": "filings → event items (title/link/published/summary)."
+  },
+  {
+    "id": "clinicaltrials_v2_studies",
+    "label": "ClinicalTrials.gov API v2 (studies new/updated)",
+    "type": "api",
+    "access": "free",
+    "url_or_endpoint": "https://clinicaltrials.gov/api/v2/studies",
+    "query_template": "query.term={QUERY}&pageSize=100",
+    "lanes": [
+      "science_trends",
+      "market_signals",
+      "hiring_signals"
+    ],
+    "tags": [
+      "clinical_trials",
+      "pipeline_signals"
+    ],
+    "reliability": 0.93,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Page + cache. Incremental updated windows.",
+    "dedupe_key_strategy": "nct_id (+ last_update for versions)",
+    "normalization_mapping_notes": "briefTitle/url/dates/summary → event fields."
+  },
+  {
+    "id": "cisa_kev_catalog",
+    "label": "CISA Known Exploited Vulnerabilities (KEV) catalog",
+    "type": "dataset",
+    "access": "free",
+    "url_or_endpoint": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+    "query_template": "",
+    "lanes": [
+      "cybersecurity",
+      "margin_protection",
+      "regulatory"
+    ],
+    "tags": [
+      "cisa",
+      "kev",
+      "exploited"
+    ],
+    "reliability": 0.97,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Fetch daily; honor caching headers; fallback to last-good cache.",
+    "dedupe_key_strategy": "cve_id",
+    "normalization_mapping_notes": "cve/product/dateAdded → event fields."
+  },
+  {
+    "id": "nist_nvd_cve_api",
+    "label": "NIST NVD CVE API 2.0 (filtered stream)",
+    "type": "api",
+    "access": "free",
+    "url_or_endpoint": "https://services.nvd.nist.gov/rest/json/cves/2.0",
+    "query_template": "keywordSearch={QUERY}&pubStartDate={START_ISO}&pubEndDate={END_ISO}&resultsPerPage=200&startIndex={OFFSET}",
+    "lanes": [
+      "cybersecurity",
+      "margin_protection"
+    ],
+    "tags": [
+      "nist",
+      "nvd",
+      "cve"
+    ],
+    "reliability": 0.9,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Use API key if available; otherwise throttle and page carefully; backoff on 429.",
+    "dedupe_key_strategy": "cve_id (+ lastModified for versions)",
+    "normalization_mapping_notes": "CVE id/published/description/references → event fields."
+  },
+  {
+    "id": "sam_gov_opportunities",
+    "label": "SAM.gov Opportunities API (requires API key)",
+    "type": "api",
+    "access": "reg",
+    "url_or_endpoint": "https://api.sam.gov/prod/opportunities/v2/search",
+    "query_template": "q={QUERY}&postedFrom={START_DATE}&postedTo={END_DATE}&limit=100&offset={OFFSET}",
+    "lanes": [
+      "construction_capex",
+      "market_signals",
+      "competitive_intel",
+      "cybersecurity"
+    ],
+    "tags": [
+      "sam_gov",
+      "procurement"
+    ],
+    "reliability": 0.9,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Requires SAM_API_KEY env var. Cache + page via offset.",
+    "dedupe_key_strategy": "noticeId",
+    "normalization_mapping_notes": "title/uiLink/postedDate/description → event fields."
+  },
+  {
+    "id": "email_alerts_imap",
+    "label": "Email alerts via IMAP (ToS-safe, user-managed)",
+    "type": "email_alert",
+    "access": "reg",
+    "url_or_endpoint": "imap://{IMAP_HOST}:{IMAP_PORT}/{IMAP_MAILBOX}",
+    "query_template": "Subject/body contains {ACCOUNT} and/or {TOPIC}",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "cybersecurity",
+      "regulatory"
+    ],
+    "tags": [
+      "email_ingest",
+      "fallback"
+    ],
+    "reliability": 0.55,
+    "update_frequency": "hourly",
+    "rate_limit_notes": "Poll IMAP with backoff; store message-id + extracted URL/snippet only.",
+    "dedupe_key_strategy": "email_message_id (+ url hash)",
+    "normalization_mapping_notes": "subject/date/first_url/snippet → event fields."
+  }
+]

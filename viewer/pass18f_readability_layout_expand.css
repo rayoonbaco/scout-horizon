@@ -1,0 +1,155 @@
+/* Scout Horizon Pass 18F: larger readable executive layout. */
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.pass18f-readable {
+  font-family: "Segoe UI Variable", "Segoe UI", "Aptos", "Inter", Arial, sans-serif !important;
+  padding-bottom: 120px !important;
+  overflow-y: auto !important;
+}
+
+/* Pull the right rail left into unused black space and make it easier to read. */
+.pass18f-right-rail {
+  width: min(660px, 41vw) !important;
+  min-width: 560px !important;
+  max-width: 700px !important;
+  margin-left: 0 !important;
+  transform: translateX(-34px) !important;
+  max-height: calc(100vh - 72px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 136px !important;
+  scrollbar-gutter: stable !important;
+}
+
+/* Make the left console a bit easier to read without changing its footprint too much. */
+.pass18f-left-rail {
+  width: min(540px, 34vw) !important;
+  max-width: 560px !important;
+}
+
+.pass18f-left-rail input,
+.pass18f-left-rail select,
+.pass18f-left-rail button {
+  font-size: 15.5px !important;
+  line-height: 1.32 !important;
+  min-height: 38px !important;
+}
+
+.pass18f-left-rail button {
+  font-weight: 850 !important;
+}
+
+.pass18f-left-rail .pass18f-title {
+  font-size: 42px !important;
+  letter-spacing: -0.035em !important;
+}
+
+.pass18f-right-rail,
+.pass18f-right-rail * {
+  letter-spacing: 0.002em !important;
+}
+
+.pass18f-right-rail .pass18f-readable {
+  font-size: 15.35px !important;
+  line-height: 1.5 !important;
+}
+
+.pass18f-right-rail .pass18f-small {
+  font-size: 13.65px !important;
+  line-height: 1.46 !important;
+}
+
+.pass18f-right-rail .pass18f-label {
+  font-size: 11.4px !important;
+  line-height: 1.24 !important;
+  letter-spacing: .085em !important;
+  font-weight: 900 !important;
+}
+
+.pass18f-right-rail .pass18f-headline {
+  font-size: 25px !important;
+  line-height: 1.08 !important;
+  letter-spacing: -0.022em !important;
+  font-weight: 950 !important;
+}
+
+.pass18f-right-rail .pass18f-section-heading {
+  font-size: 21.5px !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.018em !important;
+  font-weight: 950 !important;
+}
+
+.pass18f-right-rail .pass18f-card {
+  padding: 14px 16px !important;
+  border-radius: 17px !important;
+  margin-bottom: 13px !important;
+}
+
+.pass18f-right-rail .pass18f-inner-card {
+  padding: 12px 14px !important;
+  border-radius: 13px !important;
+  margin-top: 10px !important;
+}
+
+/* Existing Agent Reasoning card gets more room and less cramped text. */
+#pass18c-agent-reasoning-card,
+#pass18b-agent-reasoning-card {
+  font-size: 15px !important;
+  line-height: 1.48 !important;
+  padding: 15px 17px !important;
+}
+
+#pass18c-agent-reasoning-card .p18c-title,
+#pass18b-agent-reasoning-card .p18b-title {
+  font-size: 22px !important;
+  line-height: 1.12 !important;
+}
+
+#pass18c-agent-reasoning-card .p18c-line,
+#pass18b-agent-reasoning-card .p18b-line {
+  font-size: 14.4px !important;
+  line-height: 1.48 !important;
+}
+
+#pass18c-agent-reasoning-card .p18c-label,
+#pass18b-agent-reasoning-card .p18b-label {
+  font-size: 11.25px !important;
+}
+
+/* Let the chips breathe a little. */
+.pass18f-right-rail button,
+.pass18f-right-rail .chip,
+.pass18f-left-rail button,
+.pass18f-left-rail .chip {
+  font-size: 13px !important;
+}
+
+/* At narrower widths, avoid pushing the rail off-screen. */
+@media (max-width: 1450px) {
+  .pass18f-right-rail {
+    min-width: 520px !important;
+    width: min(620px, 40vw) !important;
+    transform: translateX(-18px) !important;
+  }
+  .pass18f-left-rail {
+    width: min(500px, 33vw) !important;
+  }
+}
+
+@media (max-width: 1180px) {
+  .pass18f-right-rail {
+    transform: none !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  .pass18f-left-rail {
+    width: auto !important;
+    max-width: none !important;
+  }
+}

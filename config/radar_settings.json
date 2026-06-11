@@ -1,0 +1,117 @@
+{
+  "clinical_trials": {
+    "enabled": true,
+    "max_items_per_run": 250,
+    "max_pages_per_query": 1,
+    "max_queries_per_run": 8,
+    "sponsor_only_queries": true,
+    "exclude_healthy_participants": true,
+    "exclude_by_keywords": false,
+    "exclude_keywords": [
+      "healthy participants",
+      "phase 1",
+      "bioequivalence",
+      "pharmacokinetics"
+    ]
+  },
+  "discovery": {
+    "enabled": true,
+    "max_queries_per_run": 28,
+    "account_query_limit": 8,
+    "region_query_limit": 6,
+    "topic_query_limit": 16,
+    "capex_queries": [
+      "groundbreaking OR expansion OR facility OR campus OR manufacturing site OR cleanroom OR fill finish OR biologics plant OR GMP facility",
+      "permit OR zoning OR site plan OR construction award OR EPC OR design build OR commissioning"
+    ],
+    "hiring_queries": [
+      "hiring OR jobs OR careers OR recruiting OR openings automation OR controls OR OT OR SCADA",
+      "validation OR CQV OR CSV OR commissioning OR quality engineering OR MES OR BAS"
+    ],
+    "partnership_queries": [
+      "partnership OR collaboration OR co-development OR licensing deal OR supply agreement OR strategic alliance",
+      "manufacturing agreement OR CDMO OR technology transfer OR capacity reservation OR joint venture"
+    ],
+    "competitor_queries": [
+      "expansion OR acquisition OR launch OR modernization OR capacity OR footprint",
+      "award OR contract win OR preferred partner OR outsourcing"
+    ]
+  },
+  "filters": {
+    "include_text": "",
+    "exclude_text": ""
+  },
+  "sources": {
+    "free": {
+      "gdelt_doc_v2_discovery": true,
+      "sec_company_tickers_exchange": true,
+      "sec_submissions_by_cik": true,
+      "clinicaltrials_v2_studies": true,
+      "cisa_kev_catalog": true,
+      "nist_nvd_cve_api": true,
+      "sam_gov_opportunities": true,
+      "email_alerts_imap": false,
+      "manual_signals_csv": true,
+      "rss_fiercepharma": true,
+      "rss_biopharmadive": true,
+      "rss_pharmamanufacturing": true,
+      "rss_engineeringnewsrecord": true,
+      "rss_endpoints": true,
+      "rss_ispe": true,
+      "rss_google_alerts_dynamic": true
+    },
+    "premium": {
+      "evaluatepharma": false,
+      "globaldata_pharma_intelligence": false,
+      "biocentury": false,
+      "iqvia": false,
+      "pitchbook": false,
+      "crunchbase_api": false,
+      "owler_api_or_rss": false,
+      "linkedin_talent_insights_export": false,
+      "mckinsey_deloitte_pwc_exports": false,
+      "dodge": false,
+      "constructconnect": false,
+      "enr": false
+    }
+  },
+  "partnership_detection": {
+    "enabled": true,
+    "keywords": [
+      "partnership",
+      "collaboration",
+      "co-development",
+      "license",
+      "licensing",
+      "deal",
+      "agreement",
+      "alliance",
+      "joint venture",
+      "technology transfer",
+      "supply agreement",
+      "manufacturing agreement"
+    ],
+    "modalities": [
+      "oncology",
+      "cell therapy",
+      "gene therapy",
+      "glp-1",
+      "obesity",
+      "mRNA",
+      "vaccines",
+      "biologics",
+      "fill-finish",
+      "aseptic"
+    ],
+    "stages": [
+      "preclinical",
+      "phase 1",
+      "phase 2",
+      "phase 3",
+      "commercial",
+      "launch",
+      "manufacturing",
+      "supply"
+    ]
+  }
+}

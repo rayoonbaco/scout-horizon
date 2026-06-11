@@ -1,0 +1,59 @@
+{
+  "decision_lenses": [
+    {
+      "id": "ALL",
+      "label": "All signals",
+      "lanes": [],
+      "min_score": 0
+    },
+    {
+      "id": "GROW",
+      "label": "Where to grow",
+      "lanes": [
+        "market_signals",
+        "construction_capex",
+        "competitive_intel",
+        "science_trends"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "HIRE",
+      "label": "Where to hire",
+      "lanes": [
+        "hiring_signals",
+        "construction_capex",
+        "market_signals"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "EXPOSED",
+      "label": "Where I'm exposed",
+      "lanes": [
+        "margin_protection",
+        "regulatory",
+        "cybersecurity"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "CYBER",
+      "label": "OT cyber mandates",
+      "lanes": [
+        "cybersecurity",
+        "regulatory"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "DEALS",
+      "label": "Partnerships / deals",
+      "lanes": [
+        "competitive_intel",
+        "market_signals"
+      ],
+      "min_score": 0
+    }
+  ]
+}

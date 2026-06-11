@@ -1,0 +1,128 @@
+{
+  "service_lines": {
+    "BAS/BMS/Automation (GMP)": [
+      {
+        "name": "BAS/BMS modernization",
+        "query": "(BAS OR BMS OR building automation OR 'Johnson Controls' OR Metasys OR 'Siemens Desigo' OR 'Honeywell EBI') AND (GMP OR pharma OR biotech OR cleanroom)"
+      },
+      {
+        "name": "GMP automation platforms",
+        "query": "(DeltaV OR PCS7 OR Rockwell OR FactoryTalk OR SCADA OR PLC OR DCS) AND (GMP OR validation OR batch records)"
+      },
+      {
+        "name": "Data historian / MES / EBR",
+        "query": "(OSIsoft OR AVEVA PI OR historian OR MES OR 'electronic batch record' OR EBR) AND (GMP OR pharma)"
+      }
+    ],
+    "GMP Validation": [
+      {
+        "name": "CQV & commissioning",
+        "query": "(CQV OR commissioning OR qualification OR IQ OR OQ OR PQ) AND (GMP OR sterile OR biologics OR cleanroom)"
+      },
+      {
+        "name": "CSV / Part 11",
+        "query": "(CSV OR 'computer system validation' OR '21 CFR Part 11' OR Annex 11 OR GAMP) AND (GMP OR pharma OR biotech)"
+      },
+      {
+        "name": "Annex 1 / sterile",
+        "query": "('EU GMP Annex 1' OR Annex 1 OR sterility OR aseptic OR contamination control strategy OR CCS) AND (facility OR manufacturing)"
+      }
+    ],
+    "Controls Integration / Network Architecture": [
+      {
+        "name": "OT network segmentation",
+        "query": "('Purdue model' OR ISA-95 OR segmentation OR VLAN OR industrial DMZ) AND (OT OR ICS OR SCADA OR BMS)"
+      },
+      {
+        "name": "Industrial networking",
+        "query": "(industrial ethernet OR Profinet OR EtherNet/IP OR Modbus OR OPC UA) AND (pharma OR biotech OR cleanroom)"
+      },
+      {
+        "name": "Data center / mission critical crossover",
+        "query": "('mission critical' OR data center) AND (controls OR BAS OR BMS OR commissioning)"
+      }
+    ],
+    "OT Cybersecurity": [
+      {
+        "name": "ISA/IEC 62443",
+        "query": "(ISA 62443 OR IEC 62443 OR 'industrial cybersecurity') AND (OT OR ICS OR SCADA OR BMS)"
+      },
+      {
+        "name": "Ransomware in manufacturing",
+        "query": "(ransomware OR extortion) AND (manufacturing OR pharma OR biotech OR 'industrial control')"
+      },
+      {
+        "name": "KEV / exploited vulns (OT relevant)",
+        "query": "(CVE OR KEV OR exploited vulnerability) AND (ICS OR OT OR SCADA OR BMS OR PLC)"
+      }
+    ],
+    "FEL / Design-Assist": [
+      {
+        "name": "FEL-1/2/3 & early design",
+        "query": "(FEL OR 'front end loading' OR 'design assist' OR EPCM) AND (GMP OR pharma facility OR cleanroom)"
+      },
+      {
+        "name": "Cleanroom design trends",
+        "query": "(cleanroom AND (design OR ISO 14644 OR HVAC OR HEPA OR 'air change')) AND (pharma OR biotech)"
+      },
+      {
+        "name": "Construction labor & supply chain",
+        "query": "(labor shortage OR lead times OR 'long lead' OR inflation OR tariffs) AND (construction OR HVAC OR cleanroom)"
+      }
+    ]
+  },
+  "director_topics": [
+    {
+      "name": "Reshoring / onshoring manufacturing",
+      "query": "(reshoring OR onshoring OR 'domestic manufacturing') AND (pharma OR biologics OR medical device)"
+    },
+    {
+      "name": "Biologics capacity & fill-finish",
+      "query": "(biologics OR 'fill-finish' OR aseptic OR sterile) AND (expansion OR new facility OR capex)"
+    },
+    {
+      "name": "Cell & gene therapy manufacturing",
+      "query": "('cell therapy' OR 'gene therapy' OR viral vector) AND (facility OR GMP OR cleanroom)"
+    },
+    {
+      "name": "mRNA manufacturing and LNP",
+      "query": "(mRNA OR 'lipid nanoparticle' OR LNP) AND (manufacturing OR facility OR scale-up)"
+    },
+    {
+      "name": "Regulatory actions & enforcement",
+      "query": "(warning letter OR consent decree OR import alert OR recall) AND (GMP OR sterile OR manufacturing)"
+    },
+    {
+      "name": "Construction starts / permits / awards",
+      "query": "(permit OR groundbreaking OR 'construction start' OR awarded) AND (GMP OR cleanroom OR pharma facility OR biotech plant)"
+    },
+    {
+      "name": "Competitor expansion signals",
+      "query": "(acquisition OR partnership OR 'new office' OR expansion) AND (controls integration OR OT cybersecurity OR cleanroom)"
+    },
+    {
+      "name": "Hiring surges (controls/validation/cyber)",
+      "query": "('hiring' OR 'job openings' OR recruiter) AND (CQV OR validation OR controls OR OT cybersecurity)"
+    },
+    {
+      "name": "Standards advisories",
+      "query": "(ISO 14644 OR ASHRAE OR NFPA OR USP <797> OR USP <800>) AND (cleanroom OR sterile OR facility)"
+    },
+    {
+      "name": "Energy & sustainability constraints",
+      "query": "(energy cost OR electrification OR sustainability OR carbon) AND (industrial facility OR cleanroom OR HVAC)"
+    },
+    {
+      "name": "Supply chain disruptions (critical components)",
+      "query": "(lead time OR shortage OR supply chain) AND (HVAC OR HEPA OR stainless OR valves OR instrumentation)"
+    },
+    {
+      "name": "Union / labor risk (construction)",
+      "query": "(strike OR union OR labor dispute) AND (construction OR HVAC OR industrial)"
+    },
+    {
+      "name": "IT/OT convergence programs",
+      "query": "('IT/OT' OR 'OT visibility' OR 'zero trust' OR SIEM) AND (ICS OR OT OR manufacturing)"
+    }
+  ]
+}

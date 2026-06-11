@@ -1,0 +1,75 @@
+{
+  "MA": [
+    "MA",
+    "Massachusetts",
+    "Boston",
+    "Cambridge",
+    "Waltham",
+    "Worcester",
+    "Somerville"
+  ],
+  "Raleigh/Charlotte": [
+    "NC",
+    "North Carolina",
+    "Raleigh",
+    "Durham",
+    "Chapel Hill",
+    "Cary",
+    "Charlotte",
+    "Research Triangle",
+    "RTP"
+  ],
+  "Eastern PA/NJ": [
+    "PA",
+    "Pennsylvania",
+    "NJ",
+    "New Jersey",
+    "Philadelphia",
+    "King of Prussia",
+    "Princeton",
+    "Somerset",
+    "New Brunswick",
+    "Trenton"
+  ],
+  "SoCal": [
+    "CA",
+    "California",
+    "San Diego",
+    "Carlsbad",
+    "Irvine",
+    "Thousand Oaks",
+    "Los Angeles",
+    "Orange County",
+    "Riverside",
+    "Ventura"
+  ],
+  "Bay Area": [
+    "CA",
+    "California",
+    "San Francisco",
+    "South San Francisco",
+    "SSF",
+    "San Jose",
+    "Santa Clara",
+    "Fremont",
+    "Oakland",
+    "Berkeley"
+  ],
+  "Columbus": [
+    "OH",
+    "Ohio",
+    "Columbus",
+    "Dublin",
+    "New Albany",
+    "West Jefferson"
+  ],
+  "Chicago": [
+    "IL",
+    "Illinois",
+    "Chicago",
+    "Evanston",
+    "Aurora",
+    "Naperville",
+    "North Chicago"
+  ]
+}

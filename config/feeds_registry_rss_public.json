@@ -1,0 +1,60 @@
+[
+  {
+    "id": "rss_fiercepharma",
+    "label": "Fierce Pharma (RSS)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://www.fiercepharma.com/rss/xml",
+    "reliability": 0.7
+  },
+  {
+    "id": "rss_biopharmadive",
+    "label": "BioPharma Dive (RSS)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://www.biopharmadive.com/feeds/news/",
+    "reliability": 0.7
+  },
+  {
+    "id": "rss_pharmamanufacturing",
+    "label": "Pharma Manufacturing (RSS)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://www.pharmamanufacturing.com/rss/",
+    "reliability": 0.65
+  },
+  {
+    "id": "rss_engineeringnewsrecord",
+    "label": "Engineering News-Record (RSS, public)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://www.enr.com/rss/news",
+    "reliability": 0.65
+  },
+  {
+    "id": "rss_endpoints",
+    "label": "Endpoints News (RSS, if available)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://endpts.com/feed/",
+    "reliability": 0.65
+  },
+  {
+    "id": "rss_ispe",
+    "label": "ISPE (RSS, if available)",
+    "type": "rss",
+    "access": "free",
+    "url_or_endpoint": "https://ispe.org/rss.xml",
+    "reliability": 0.65
+  },
+  {
+    "id": "rss_google_alerts_dynamic",
+    "label": "Google Alerts RSS (your URLs)",
+    "type": "rss_dynamic",
+    "access": "free",
+    "url_or_endpoint": "",
+    "reliability": 0.55,
+    "config_list_path": "config/google_alerts_rss_urls.txt",
+    "source_override": "Google Alert"
+  }
+]

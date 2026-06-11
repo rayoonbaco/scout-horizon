@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="420" viewBox="0 0 900 420" role="img" aria-label="Abstract scout horizon mark">
+  <rect width="900" height="420" fill="#080d12"/>
+  <path d="M40 282 C180 250 300 274 430 244 C545 218 668 236 860 188" fill="none" stroke="#274254" stroke-width="3" opacity="0.65"/>
+  <path d="M58 318 C205 288 333 310 470 278 C590 251 715 268 854 231" fill="none" stroke="#503b1e" stroke-width="2" opacity="0.58"/>
+  <circle cx="716" cy="92" r="48" fill="#68d5ff" opacity="0.12"/>
+  <g opacity="0.38" fill="#dcefff">
+    <path d="M270 318 L300 208 L286 184 L314 166 L350 128 L413 150 L438 178 L404 190 L386 224 L430 318 Z"/>
+    <path d="M342 151 L458 167 L444 188 L340 176 Z"/>
+  </g>
+  <g fill="none" stroke="#68d5ff" opacity="0.28">
+    <circle cx="450" cy="210" r="72"/>
+    <circle cx="450" cy="210" r="132"/>
+    <circle cx="450" cy="210" r="194"/>
+    <path d="M450 18 L450 394 M72 210 L828 210"/>
+  </g>
+  <text x="620" y="346" fill="#68d5ff" opacity="0.72" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="6">SCOUT MODE</text>
+</svg>

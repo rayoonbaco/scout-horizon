@@ -1,0 +1,9 @@
+{
+  "feeds": [
+    {"name": "Fierce Pharma", "url": "https://www.fiercepharma.com/rss/xml"},
+    {"name": "BioPharma Dive", "url": "https://www.biopharmadive.com/feeds/news/"},
+    {"name": "Endpoints News", "url": "https://endpts.com/feed/"},
+    {"name": "STAT", "url": "https://www.statnews.com/feed/"},
+    {"name": "FDA Press Releases", "url": "https://www.fda.gov/about-fda/contact-fda/stay-informed/rss-feeds/press-releases/rss.xml"}
+  ]
+}

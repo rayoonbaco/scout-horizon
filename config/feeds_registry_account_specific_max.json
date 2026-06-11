@@ -1,0 +1,488 @@
+[
+  {
+    "id": "bundle_lilly",
+    "label": "Account Bundle: Lilly",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Lilly",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_amgen",
+    "label": "Account Bundle: Amgen",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Amgen",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_takeda",
+    "label": "Account Bundle: Takeda",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Takeda",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_sanofi",
+    "label": "Account Bundle: Sanofi",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Sanofi",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_genentech",
+    "label": "Account Bundle: Genentech",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Genentech",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_lonza",
+    "label": "Account Bundle: Lonza",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Lonza",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_astrazeneca",
+    "label": "Account Bundle: AstraZeneca",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/AstraZeneca",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_moderna",
+    "label": "Account Bundle: Moderna",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Moderna",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_pfizer",
+    "label": "Account Bundle: Pfizer",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Pfizer",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "client"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_e_tech_group",
+    "label": "Account Bundle: E-Tech Group",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/E-Tech Group",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_siemens",
+    "label": "Account Bundle: Siemens",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Siemens",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_jci",
+    "label": "Account Bundle: JCI",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/JCI",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_harris_mechanical",
+    "label": "Account Bundle: Harris Mechanical",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Harris Mechanical",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_hoffman_building_tech",
+    "label": "Account Bundle: Hoffman Building Tech",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Hoffman Building Tech",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_exyte",
+    "label": "Account Bundle: Exyte",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Exyte",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "competitor"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_crb",
+    "label": "Account Bundle: CRB",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/CRB",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "watch"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_ips",
+    "label": "Account Bundle: IPS",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/IPS",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "watch"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  },
+  {
+    "id": "bundle_jacobs",
+    "label": "Account Bundle: Jacobs",
+    "type": "json",
+    "access": "free",
+    "url_or_endpoint": "bundle://account/Jacobs",
+    "query_template": "discovery: ({ACCOUNT}) AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "margin_protection",
+      "cybersecurity",
+      "regulatory",
+      "science_trends"
+    ],
+    "tags": [
+      "account_bundle",
+      "watch"
+    ],
+    "reliability": 0.8,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Bundle orchestrator fans out to underlying feeds with shared caching + throttles.",
+    "dedupe_key_strategy": "global_event_fingerprint",
+    "normalization_mapping_notes": "Fans out to discovery + authoritative lanes; uses account aliases; merges results into unified schema."
+  }
+]

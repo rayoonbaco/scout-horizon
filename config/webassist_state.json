@@ -1,0 +1,17 @@
+{
+  "keyword": "pharma partnership",
+  "company": "",
+  "mode": "broad_and_targeted",
+  "sources": [
+    "Fierce Pharma",
+    "BioPharma Dive",
+    "Endpoints News",
+    "FDA Press Releases",
+    "STAT"
+  ],
+  "max_results_per_query": 6,
+  "last_action": "Added 12 signals",
+  "last_error": "",
+  "last_updated": "2026-06-11T18:54:31+00:00",
+  "last_mode_used": "demo_safe"
+}

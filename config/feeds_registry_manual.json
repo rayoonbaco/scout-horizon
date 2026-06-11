@@ -1,0 +1,13 @@
+[
+  {
+    "id": "manual_signals_csv",
+    "label": "Manual Signals CSV (manual research)",
+    "type": "manual_csv",
+    "access": "free",
+    "reliability": 0.6,
+    "paths": [
+      "inputs/manual_signals.csv",
+      "inputs/manual_urls.csv"
+    ]
+  }
+]

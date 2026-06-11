@@ -1,0 +1,44 @@
+{
+  "clients": [
+    "Lilly",
+    "Amgen",
+    "Takeda",
+    "Sanofi",
+    "Genentech",
+    "Lonza",
+    "AstraZeneca",
+    "Moderna",
+    "Pfizer"
+  ],
+  "competitors": [
+    "E-Tech Group",
+    "Siemens",
+    "JCI",
+    "Harris Mechanical",
+    "Hoffman Building Tech",
+    "Exyte"
+  ],
+  "watchlist": [
+    "CRB",
+    "IPS",
+    "Jacobs"
+  ],
+  "aliases": {
+    "Lilly": [
+      "Eli Lilly",
+      "Eli Lilly and Company"
+    ],
+    "JCI": [
+      "Johnson Controls",
+      "JCI"
+    ],
+    "AstraZeneca": [
+      "AZ",
+      "AstraZeneca"
+    ],
+    "Genentech": [
+      "Genentech",
+      "Roche Genentech"
+    ]
+  }
+}

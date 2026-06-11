@@ -1,0 +1,124 @@
+/* Scout Horizon Pass 18E: legibility and safe viewport polish. */
+html {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+body.pass18e-legibility {
+  font-family: "Segoe UI Variable", "Segoe UI", "Inter", Arial, sans-serif !important;
+  padding-bottom: 112px !important;
+  overflow-y: auto !important;
+}
+
+body.pass18e-legibility,
+body.pass18e-legibility button,
+body.pass18e-legibility input,
+body.pass18e-legibility select,
+body.pass18e-legibility textarea {
+  font-family: "Segoe UI Variable", "Segoe UI", "Inter", Arial, sans-serif !important;
+}
+
+.pass18e-right-rail {
+  min-width: 500px !important;
+  max-width: 580px !important;
+  width: min(580px, 36vw) !important;
+  max-height: calc(100vh - 74px) !important;
+  overflow-y: auto !important;
+  padding-bottom: 124px !important;
+  scrollbar-gutter: stable !important;
+  scroll-padding-bottom: 124px !important;
+}
+
+.pass18e-right-rail::-webkit-scrollbar {
+  width: 10px;
+}
+
+.pass18e-right-rail::-webkit-scrollbar-thumb {
+  background: rgba(112, 210, 214, 0.38);
+  border-radius: 999px;
+}
+
+.pass18e-right-rail::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.pass18e-right-rail .pass18e-card-block {
+  margin-bottom: 12px !important;
+}
+
+.pass18e-right-rail .pass18e-readable,
+.pass18e-right-rail .pass18e-readable * {
+  line-height: 1.44 !important;
+  letter-spacing: 0.005em !important;
+}
+
+.pass18e-right-rail .pass18e-readable {
+  font-size: 13.75px !important;
+}
+
+.pass18e-right-rail .pass18e-title {
+  font-size: 22px !important;
+  line-height: 1.12 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.pass18e-right-rail .pass18e-section-title {
+  font-size: 19px !important;
+  line-height: 1.18 !important;
+  letter-spacing: -0.01em !important;
+}
+
+.pass18e-right-rail .pass18e-label {
+  font-size: 10.75px !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0.08em !important;
+}
+
+.pass18e-right-rail .pass18e-small {
+  font-size: 12.4px !important;
+  line-height: 1.42 !important;
+}
+
+.pass18e-left-workbench {
+  max-width: 500px !important;
+}
+
+.pass18e-left-workbench input,
+.pass18e-left-workbench select,
+.pass18e-left-workbench button {
+  font-size: 14px !important;
+  line-height: 1.28 !important;
+}
+
+.pass18e-left-workbench .pass18e-readable {
+  line-height: 1.38 !important;
+}
+
+#pass18c-agent-reasoning-card,
+#pass18b-agent-reasoning-card {
+  font-size: 13.5px !important;
+  line-height: 1.42 !important;
+}
+
+#pass18c-agent-reasoning-card .p18c-title,
+#pass18b-agent-reasoning-card .p18b-title {
+  font-size: 19px !important;
+}
+
+@media (max-width: 1300px) {
+  .pass18e-right-rail {
+    min-width: 460px !important;
+    width: min(520px, 38vw) !important;
+  }
+}
+
+@media (max-width: 980px) {
+  .pass18e-right-rail {
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+    padding-bottom: 48px !important;
+  }
+}

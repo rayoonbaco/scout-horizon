@@ -1,0 +1,152 @@
+{
+  "targets": [
+    {
+      "name": "Fierce Pharma",
+      "domains": [
+        "fiercepharma.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "Endpoints News",
+      "domains": [
+        "endpts.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "BioPharma Dive",
+      "domains": [
+        "biopharmadive.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "STAT",
+      "domains": [
+        "statnews.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "FDA Press Releases",
+      "domains": [
+        "fda.gov"
+      ],
+      "premium": false
+    },
+    {
+      "name": "Pharma Manufacturing",
+      "domains": [
+        "pharmamanufacturing.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "SEC Filings (EDGAR)",
+      "domains": [
+        "sec.gov"
+      ],
+      "premium": false
+    },
+    {
+      "name": "FDA (Warning Letters / Inspections)",
+      "domains": [
+        "fda.gov"
+      ],
+      "premium": false
+    },
+    {
+      "name": "EMA Regulatory Updates",
+      "domains": [
+        "ema.europa.eu"
+      ],
+      "premium": false
+    },
+    {
+      "name": "ISPE",
+      "domains": [
+        "ispe.org"
+      ],
+      "premium": false
+    },
+    {
+      "name": "Engineering News-Record (ENR)",
+      "domains": [
+        "enr.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "McKinsey Life Sciences",
+      "domains": [
+        "mckinsey.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "Deloitte Life Sciences",
+      "domains": [
+        "deloitte.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "PwC Life Sciences",
+      "domains": [
+        "pwc.com"
+      ],
+      "premium": false
+    },
+    {
+      "name": "EvaluatePharma",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "GlobalData Pharma Intelligence",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "BioCentury",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "IQVIA",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "Dodge Construction Network",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "ConstructConnect",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "PitchBook",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "Crunchbase",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "Owler",
+      "domains": [],
+      "premium": true
+    },
+    {
+      "name": "LinkedIn Talent Insights",
+      "domains": [],
+      "premium": true
+    }
+  ]
+}

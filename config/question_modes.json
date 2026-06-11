@@ -1,0 +1,82 @@
+{
+  "Where to grow": {
+    "market_signals": 1.25,
+    "construction_capex": 1.25,
+    "science_trends": 1.1,
+    "competitive_intel": 1.05,
+    "hiring_signals": 1.0,
+    "regulatory": 0.9,
+    "cybersecurity": 0.9,
+    "margin_protection": 1.0
+  },
+  "Where to hire": {
+    "hiring_signals": 1.35,
+    "construction_capex": 1.15,
+    "market_signals": 1.1,
+    "competitive_intel": 1.0,
+    "science_trends": 1.0,
+    "regulatory": 0.9,
+    "cybersecurity": 0.9,
+    "margin_protection": 1.0
+  },
+  "Where I'm exposed": {
+    "margin_protection": 1.35,
+    "regulatory": 1.25,
+    "cybersecurity": 1.25,
+    "market_signals": 1.0,
+    "competitive_intel": 1.05,
+    "construction_capex": 1.0,
+    "science_trends": 0.9,
+    "hiring_signals": 0.95
+  },
+  "Margin protection": {
+    "margin_protection": 1.4,
+    "competitive_intel": 1.1,
+    "cybersecurity": 1.1,
+    "market_signals": 1.0,
+    "construction_capex": 0.95,
+    "regulatory": 1.0,
+    "science_trends": 0.9,
+    "hiring_signals": 0.95
+  },
+  "Capacity risk": {
+    "construction_capex": 1.2,
+    "regulatory": 1.2,
+    "hiring_signals": 1.1,
+    "market_signals": 1.05,
+    "cybersecurity": 1.0,
+    "margin_protection": 1.05,
+    "competitive_intel": 1.0,
+    "science_trends": 0.95
+  },
+  "Competitive moves": {
+    "competitive_intel": 1.35,
+    "construction_capex": 1.1,
+    "market_signals": 1.1,
+    "hiring_signals": 1.0,
+    "margin_protection": 1.0,
+    "cybersecurity": 0.95,
+    "regulatory": 0.95,
+    "science_trends": 0.95
+  },
+  "Regulatory pressure": {
+    "regulatory": 1.45,
+    "margin_protection": 1.15,
+    "cybersecurity": 1.05,
+    "market_signals": 1.0,
+    "construction_capex": 1.0,
+    "competitive_intel": 0.95,
+    "hiring_signals": 0.95,
+    "science_trends": 0.9
+  },
+  "OT cyber mandates": {
+    "cybersecurity": 1.55,
+    "regulatory": 1.1,
+    "margin_protection": 1.1,
+    "market_signals": 0.95,
+    "competitive_intel": 0.95,
+    "construction_capex": 0.95,
+    "hiring_signals": 0.9,
+    "science_trends": 0.85
+  }
+}

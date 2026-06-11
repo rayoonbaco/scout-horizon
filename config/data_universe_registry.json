@@ -1,0 +1,446 @@
+[
+  {
+    "source_id": "gdelt_doc_v2_discovery",
+    "source_name": "GDELT 2.0 Doc API",
+    "activation_status": "on_by_default",
+    "source_class": "public",
+    "ingestion_method": "API",
+    "credential_location": ".env (none required)",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "regulatory",
+      "cybersecurity"
+    ],
+    "event_schema_mapping": "title/url/date/snippet -> normalized event; account/region/topic inferred",
+    "rate_limit_strategy": "Throttle requests, narrow query count per run, cache raw results, backoff on 429/5xx",
+    "cache_strategy": "File cache in .cache keyed by query + window",
+    "dedupe_strategy": "Fingerprint title + URL + published date after normalization",
+    "notes": "Use only stable API access; no scraping"
+  },
+  {
+    "source_id": "clinicaltrials_v2_studies",
+    "source_name": "ClinicalTrials.gov API v2",
+    "activation_status": "on_by_default",
+    "source_class": "public",
+    "ingestion_method": "API",
+    "credential_location": ".env (none required)",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "science_trends",
+      "market_signals"
+    ],
+    "event_schema_mapping": "nctId/title/date/summary -> normalized event",
+    "rate_limit_strategy": "Cap queries, cap pages, cap total items per run",
+    "cache_strategy": "Cache by query/page token in .cache",
+    "dedupe_strategy": "NCT id + normalized title",
+    "notes": "Volume controls available in config/radar_settings.json"
+  },
+  {
+    "source_id": "sec_submissions_by_cik",
+    "source_name": "SEC EDGAR Submissions JSON",
+    "activation_status": "on_by_default",
+    "source_class": "public",
+    "ingestion_method": "API",
+    "credential_location": ".env SEC_USER_AGENT placeholder",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "margin_protection",
+      "construction_capex",
+      "regulatory"
+    ],
+    "event_schema_mapping": "filing metadata -> normalized event",
+    "rate_limit_strategy": "Respect SEC fair access and throttle to low request rate",
+    "cache_strategy": "Ticker map 7d, submissions 24h",
+    "dedupe_strategy": "SEC accession number",
+    "notes": "Official source; strong evidence weight"
+  },
+  {
+    "source_id": "cisa_kev_catalog",
+    "source_name": "CISA Known Exploited Vulnerabilities Catalog",
+    "activation_status": "on_by_default",
+    "source_class": "public",
+    "ingestion_method": "Dataset JSON feed",
+    "credential_location": ".env (none required)",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "cybersecurity",
+      "regulatory",
+      "margin_protection"
+    ],
+    "event_schema_mapping": "cveID/product/dateAdded/notes -> normalized event",
+    "rate_limit_strategy": "Daily fetch with fallback to last-good cache",
+    "cache_strategy": "6h cache",
+    "dedupe_strategy": "CVE ID",
+    "notes": "Always link to CISA and NVD where possible"
+  },
+  {
+    "source_id": "nist_nvd_cve_api",
+    "source_name": "NIST NVD CVE API 2.0",
+    "activation_status": "on_by_default",
+    "source_class": "public",
+    "ingestion_method": "API",
+    "credential_location": ".env NVD_API_KEY placeholder",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "cybersecurity",
+      "margin_protection"
+    ],
+    "event_schema_mapping": "CVE id/date/description/references -> normalized event",
+    "rate_limit_strategy": "Throttle, page carefully, use API key when available",
+    "cache_strategy": "Windowed cache by query + offset",
+    "dedupe_strategy": "CVE ID + last modified",
+    "notes": "Official vulnerability reference source"
+  },
+  {
+    "source_id": "sam_gov_opportunities",
+    "source_name": "SAM.gov Opportunities API",
+    "activation_status": "on_by_default_when_key_present",
+    "source_class": "public",
+    "ingestion_method": "API",
+    "credential_location": ".env SAM_API_KEY",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "construction_capex",
+      "market_signals",
+      "competitive_intel",
+      "cybersecurity"
+    ],
+    "event_schema_mapping": "solicitation metadata -> normalized event",
+    "rate_limit_strategy": "Use limited query set and cache per date window",
+    "cache_strategy": "File cache by query/date window",
+    "dedupe_strategy": "noticeId or canonical solicitation link",
+    "notes": "Useful for public-sector facility and cyber work"
+  },
+  {
+    "source_id": "email_alerts_imap",
+    "source_name": "User-managed email alert exports",
+    "activation_status": "off_by_default",
+    "source_class": "user_managed",
+    "ingestion_method": "IMAP metadata only",
+    "credential_location": ".env IMAP_* placeholders",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "hiring_signals",
+      "construction_capex",
+      "cybersecurity",
+      "regulatory"
+    ],
+    "event_schema_mapping": "subject/date/first_url/snippet -> normalized event",
+    "rate_limit_strategy": "Backoff polling with message-id tracking",
+    "cache_strategy": "UID checkpoint cache",
+    "dedupe_strategy": "message-id + URL hash",
+    "notes": "Enable only if user chooses to manage mailbox access"
+  },
+  {
+    "source_id": "evaluatepharma",
+    "source_name": "EvaluatePharma",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or licensed export only",
+    "credential_location": ".env placeholders or vendor export",
+    "export_drop_location": "data_exports/evaluatepharma/",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "science_trends"
+    ],
+    "event_schema_mapping": "licensed metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Local cached export snapshots",
+    "dedupe_strategy": "vendor content id",
+    "notes": "Do not ingest without license"
+  },
+  {
+    "source_id": "globaldata_pharma_intelligence",
+    "source_name": "GlobalData Pharma Intelligence",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or export only",
+    "credential_location": ".env placeholders or vendor export",
+    "export_drop_location": "data_exports/globaldata/",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "science_trends",
+      "construction_capex"
+    ],
+    "event_schema_mapping": "licensed metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "vendor content id",
+    "notes": "Do not ingest without license"
+  },
+  {
+    "source_id": "biocentury",
+    "source_name": "BioCentury",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed export only",
+    "credential_location": "n/a in chat; use export workflow",
+    "export_drop_location": "data_exports/biocentury/",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "science_trends",
+      "partnerships"
+    ],
+    "event_schema_mapping": "licensed metadata -> normalized event",
+    "rate_limit_strategy": "Vendor terms only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "export row fingerprint",
+    "notes": "Do not ingest full text unless allowed"
+  },
+  {
+    "source_id": "iqvia",
+    "source_name": "IQVIA",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed export only",
+    "credential_location": "n/a in chat; use export workflow",
+    "export_drop_location": "data_exports/iqvia/",
+    "lane_mapping": [
+      "market_signals",
+      "margin_protection",
+      "competitive_intel"
+    ],
+    "event_schema_mapping": "licensed metadata -> normalized event",
+    "rate_limit_strategy": "Vendor terms only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "export row fingerprint",
+    "notes": "Do not ingest without license"
+  },
+  {
+    "source_id": "pitchbook",
+    "source_name": "PitchBook",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or export only",
+    "credential_location": ".env placeholders or export",
+    "export_drop_location": "data_exports/pitchbook/",
+    "lane_mapping": [
+      "competitive_intel",
+      "partnerships",
+      "market_signals"
+    ],
+    "event_schema_mapping": "company/deal metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "deal/company id",
+    "notes": "Do not ingest without license"
+  },
+  {
+    "source_id": "crunchbase_api",
+    "source_name": "Crunchbase API",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "API only",
+    "credential_location": ".env placeholder",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "competitive_intel",
+      "partnerships",
+      "market_signals"
+    ],
+    "event_schema_mapping": "organization/deal metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "API response cache",
+    "dedupe_strategy": "entity id",
+    "notes": "API only; no scraping"
+  },
+  {
+    "source_id": "owler_api_or_rss",
+    "source_name": "Owler",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "API or stable RSS only",
+    "credential_location": ".env placeholder",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "competitive_intel",
+      "market_signals"
+    ],
+    "event_schema_mapping": "news metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "API/RSS cache",
+    "dedupe_strategy": "article id or URL",
+    "notes": "Use only if stable official access exists"
+  },
+  {
+    "source_id": "linkedin_talent_insights_export",
+    "source_name": "LinkedIn Talent Insights",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed export only",
+    "credential_location": "No secrets in chat",
+    "export_drop_location": "data_exports/linkedin_talent_insights/",
+    "lane_mapping": [
+      "hiring_signals",
+      "market_signals"
+    ],
+    "event_schema_mapping": "hiring/export metadata -> normalized event",
+    "rate_limit_strategy": "Licensed export workflow only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "export row fingerprint",
+    "notes": "No scraping"
+  },
+  {
+    "source_id": "mckinsey_deloitte_pwc_exports",
+    "source_name": "McKinsey / Deloitte / PwC licensed exports",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed export only",
+    "credential_location": "No secrets in chat",
+    "export_drop_location": "data_exports/mckinsey_deloitte_pwc/",
+    "lane_mapping": [
+      "market_signals",
+      "margin_protection",
+      "competitive_intel"
+    ],
+    "event_schema_mapping": "report metadata -> normalized event",
+    "rate_limit_strategy": "Licensed export workflow only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "report fingerprint",
+    "notes": "Only metadata and licensed extracts"
+  },
+  {
+    "source_id": "dodge",
+    "source_name": "Dodge Construction Network",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or export only",
+    "credential_location": ".env placeholder or export",
+    "export_drop_location": "data_exports/dodge/",
+    "lane_mapping": [
+      "construction_capex",
+      "market_signals"
+    ],
+    "event_schema_mapping": "project metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "project id",
+    "notes": "Strong capex signal when licensed"
+  },
+  {
+    "source_id": "constructconnect",
+    "source_name": "ConstructConnect",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or export only",
+    "credential_location": ".env placeholder or export",
+    "export_drop_location": "data_exports/constructconnect/",
+    "lane_mapping": [
+      "construction_capex",
+      "market_signals"
+    ],
+    "event_schema_mapping": "project metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "project id",
+    "notes": "Strong capex signal when licensed"
+  },
+  {
+    "source_id": "enr",
+    "source_name": "Engineering News-Record",
+    "activation_status": "off_by_default",
+    "source_class": "premium",
+    "ingestion_method": "Licensed API or licensed export only",
+    "credential_location": ".env placeholder or export",
+    "export_drop_location": "data_exports/enr/",
+    "lane_mapping": [
+      "construction_capex",
+      "competitive_intel",
+      "market_signals"
+    ],
+    "event_schema_mapping": "article/project metadata -> normalized event",
+    "rate_limit_strategy": "Vendor quota only",
+    "cache_strategy": "Snapshot cache",
+    "dedupe_strategy": "article/project id",
+    "notes": "Use only when licensed"
+  },
+  {
+    "source_id": "fda_inspections_warning_letters",
+    "source_name": "FDA inspections and warning letters",
+    "activation_status": "planned_public_source",
+    "source_class": "public",
+    "ingestion_method": "Official dataset or RSS only when stable endpoint is configured",
+    "credential_location": "n/a",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "regulatory",
+      "margin_protection",
+      "market_signals"
+    ],
+    "event_schema_mapping": "inspection/enforcement metadata -> normalized event",
+    "rate_limit_strategy": "Cache and throttle official endpoints",
+    "cache_strategy": "Official feed cache",
+    "dedupe_strategy": "inspection id or warning letter id",
+    "notes": "Registry entry included; adapter can be layered in when endpoint is finalized"
+  },
+  {
+    "source_id": "ema_regulatory_updates",
+    "source_name": "EMA regulatory updates",
+    "activation_status": "planned_public_source",
+    "source_class": "public",
+    "ingestion_method": "Official RSS/API only when stable endpoint is configured",
+    "credential_location": "n/a",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "regulatory",
+      "market_signals",
+      "science_trends"
+    ],
+    "event_schema_mapping": "update metadata -> normalized event",
+    "rate_limit_strategy": "Cache official feed",
+    "cache_strategy": "Official feed cache",
+    "dedupe_strategy": "official item id",
+    "notes": "Registry entry included for safe future activation"
+  },
+  {
+    "source_id": "manual_signals_csv",
+    "source_name": "Manual Signals CSV (manual research)",
+    "activation_status": "active",
+    "source_class": "user_curated",
+    "ingestion_method": "CSV drop (inputs/manual_signals.csv)",
+    "credential_location": "n/a",
+    "export_drop_location": "inputs/",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "construction_capex",
+      "regulatory"
+    ],
+    "event_schema_mapping": "url/title/summary/published/source -> normalized event",
+    "rate_limit_strategy": "n/a",
+    "cache_strategy": "file based",
+    "dedupe_strategy": "url hash",
+    "notes": "ToS-safe way to capture public pages Executive Leader finds via Google without scraping gated sites."
+  },
+  {
+    "source_id": "rss_public_trade_press",
+    "source_name": "Public RSS feeds (trade press + standards)",
+    "activation_status": "active",
+    "source_class": "public",
+    "ingestion_method": "RSS/Atom via feedparser",
+    "credential_location": "n/a",
+    "export_drop_location": "n/a",
+    "lane_mapping": [
+      "market_signals",
+      "competitive_intel",
+      "science_trends",
+      "construction_capex"
+    ],
+    "event_schema_mapping": "rss title/link/summary/date/domain -> normalized event",
+    "rate_limit_strategy": "Cache + short timeouts; ignore failures",
+    "cache_strategy": "in-memory per run; dedupe downstream",
+    "dedupe_strategy": "url hash; fallback domain+title+date",
+    "notes": "Feeds can be edited in config/feeds_registry_rss_public.json; add Google Alerts RSS URLs in config/google_alerts_rss_urls.txt."
+  }
+]

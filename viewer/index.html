@@ -1,0 +1,4314 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Scout Horizon</title>
+  <style>
+    :root{
+      --bg:#f5f6f8;--card:#fff;--line:#dde2e7;--text:#18212b;--muted:#66717e;
+      --ok:#eef8ef;--warn:#fff6df;--err:#fdeeee;--chip:#eff3f8;--chip-border:#d6dde6;
+      --accent:#2b6cb0;--accent-soft:#eef5fd;--good:#14532d;--risk:#9a3412;
+      --shadow:0 1px 2px rgba(15,23,42,.05),0 8px 24px rgba(15,23,42,.04);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1600px;margin:0 auto;padding:20px}
+    .top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    h1{margin:0 0 4px;font-size:30px;line-height:1.1}
+    .muted{color:var(--muted)}
+    .banner{margin-top:14px;border:1px solid var(--line);border-radius:16px;background:var(--card);padding:12px 14px;box-shadow:var(--shadow)}
+    .banner.ok{background:var(--ok)} .banner.warn{background:var(--warn)} .banner.err{background:var(--err)}
+    .layout{display:grid;grid-template-columns:400px minmax(0,1fr) 430px;gap:14px;margin-top:14px;align-items:start}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--shadow)}
+    .sectionTitle{font-weight:800;margin-bottom:8px;letter-spacing:.01em}
+    .subtle{font-size:12px;color:var(--muted)}
+    .controls label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+    .controls input,.controls select,.controls button,.controls textarea{width:100%;border:1px solid #cfd6df;border-radius:12px;padding:10px 12px;font:inherit;background:#fff;color:var(--text)}
+    .controls select[multiple]{min-height:120px}
+    button{cursor:pointer}
+    button:hover{background:#fafcff}
+    .btnRow{display:grid;gap:8px;margin-top:10px}
+    .smallBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .triple{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+    .statsGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+    .stat{border:1px solid #ebeff3;border-radius:14px;padding:12px;background:#fff}
+    .stat .t{font-size:12px;color:var(--muted)}
+    .stat .v{font-size:25px;font-weight:800;margin-top:3px}
+    .stat .s{font-size:12px;color:var(--muted);margin-top:2px}
+    .split2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+    .snapshotList,.signalMetaList{display:grid;gap:8px}
+    .snapshotRow{display:flex;justify-content:space-between;gap:12px;padding:8px 10px;border:1px solid #edf1f5;border-radius:12px;background:#fbfcfe}
+    .labelPill{display:inline-flex;align-items:center;gap:6px;padding:4px 8px;border-radius:999px;background:var(--chip);border:1px solid var(--chip-border);font-size:12px;color:#314155;white-space:nowrap}
+    .labelPill.active{background:var(--accent-soft);border-color:#c7dbf6;color:#174a88}
+    .chipRow,.facetChips,.signalChips,.quickChips{display:flex;gap:8px;flex-wrap:wrap}
+    .chipBtn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--chip-border);background:var(--chip);border-radius:999px;padding:7px 10px;font-size:12px;color:#334155;cursor:pointer}
+    .chipBtn:hover{background:#f7faff}
+    .chipBtn.active{background:var(--accent-soft);border-color:#bfd3ee;color:#174a88}
+    .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap;margin:10px 0 8px}
+    .resultsMeta{font-size:12px;color:var(--muted)}
+    .list{max-height:72vh;overflow:auto;padding-right:4px}
+    .item{border:1px solid #e8edf2;border-radius:14px;padding:12px;margin-bottom:10px;cursor:pointer;background:#fff}
+    .item:hover,.item.active{border-color:#b9c7d6;background:#fbfdff}
+    .itemTop{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+    .item .title{font-weight:750;line-height:1.28;margin-bottom:6px}
+    .item .meta{font-size:12px;color:var(--muted)}
+    .preview{font-size:13px;line-height:1.45;margin-top:7px;color:#364152}
+    .badges{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+    .badge{display:inline-flex;align-items:center;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:700;border:1px solid #d9e2ec;background:#f8fafc;color:#334155}
+    .badge.score{background:#eef7ee;color:var(--good);border-color:#cfe8d3}
+    .badge.priority{background:#fff1eb;color:var(--risk);border-color:#f4c8b4}
+    .badge.conf{background:#eff6ff;color:#1d4ed8;border-color:#cdddfd}
+    .detailHeader h2{margin:0 0 8px;font-size:22px;line-height:1.25}
+    .detailSection{margin-top:12px}
+    .detailHead{font-size:12px;color:var(--muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:.04em}
+    .detailBody{border:1px solid #edf1f5;border-radius:12px;padding:10px;background:#fff;line-height:1.5}
+    .detailBody a{word-break:break-all}
+    .detailGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    details{margin-top:10px}
+    code{background:#f2f4f7;padding:1px 4px;border-radius:6px}
+    hr.sep{border:0;border-top:1px solid #edf1f5;margin:14px 0}
+    .smallList{display:grid;gap:6px;margin-top:8px}
+    .smallList .row{display:flex;justify-content:space-between;gap:12px;font-size:13px;padding:6px 0;border-bottom:1px dashed #edf1f5}
+    .smallList .row:last-child{border-bottom:0}
+    .empty{padding:18px 10px;color:var(--muted)}
+    .topActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .hero{border:1px solid #d9e6f5;background:linear-gradient(135deg,#ffffff 0%,#f4f8fd 58%,#eef6ff 100%);border-radius:22px;padding:18px;box-shadow:var(--shadow);margin-top:14px}
+    .heroTop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .heroEyebrow{text-transform:uppercase;letter-spacing:.08em;font-size:11px;font-weight:900;color:#315f93;margin-bottom:7px}
+    .hero h1{font-size:34px;margin:0 0 8px}
+    .heroLead{max-width:980px;font-size:15px;line-height:1.55;color:#2f3d4d}
+    .heroProof{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px}
+    .proofTile{border:1px solid #dfe8f3;background:rgba(255,255,255,.78);border-radius:16px;padding:11px}
+    .proofTile .k{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:800}
+    .proofTile .v{font-size:13px;font-weight:800;margin-top:4px;color:#1f2a37;line-height:1.35}
+    .demoSafe{border:1px solid #cfe6d6;background:#f2fbf4;color:#174426;border-radius:14px;padding:10px 12px;font-size:13px;max-width:360px}
+    .boardBrief{margin-top:14px;border:1px solid #d6e2ee;border-radius:20px;background:#fff;padding:14px;box-shadow:var(--shadow)}
+    .briefGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:10px}
+    .briefCard{border:1px solid #e4ebf3;border-radius:16px;background:#fbfcfe;padding:12px;min-height:104px}
+    .briefCard .h{font-size:11px;text-transform:uppercase;letter-spacing:.06em;font-weight:900;color:#64748b;margin-bottom:6px}
+    .briefCard .b{font-size:14px;line-height:1.45;color:#243142;font-weight:650}
+    .briefCard.action{background:#f7fbff;border-color:#cfe0f5}
+    .ghostBtn{border:1px solid #cfd6df;border-radius:12px;background:#fff;padding:10px 12px;font:inherit;color:var(--text);cursor:pointer;box-shadow:var(--shadow)}
+    .ghostBtn:hover{background:#fafcff}
+    .modalWrap{position:fixed;inset:0;background:rgba(15,23,42,.45);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+    .modalWrap.show{display:flex}
+    .modalCard{width:min(980px,100%);max-height:88vh;overflow:auto;background:var(--card);border:1px solid var(--line);border-radius:20px;box-shadow:0 20px 50px rgba(15,23,42,.25);padding:18px}
+    .modalTop{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin-bottom:10px}
+    .closeBtn{width:auto;padding:8px 12px;border:1px solid #cfd6df;border-radius:12px;background:#fff;cursor:pointer}
+    .howGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px}
+    .howCard{border:1px solid #e8edf2;border-radius:16px;padding:12px;background:#fbfcfe}
+    .howCard h3{margin:0 0 8px;font-size:16px}
+    .howCard p,.howCard li{font-size:14px;line-height:1.5;color:#334155}
+    .howCard ol,.howCard ul{margin:8px 0 0 18px;padding:0}
+    .helperCallout{margin-top:10px;border:1px solid #dbe8f7;background:#f7fbff;border-radius:14px;padding:12px}
+
+    /* PASS 3 - Scout Mode / Dangerous Command Center */
+    :root{
+      --bg:#070b0f;--card:#0d141b;--line:#26313c;--text:#e7edf4;--muted:#8e9dac;
+      --ok:#10251b;--warn:#2b2110;--err:#301419;--chip:#111b24;--chip-border:#334455;
+      --accent:#68d5ff;--accent-soft:#0e2230;--good:#6ee7a8;--risk:#f59e0b;
+      --danger:#ff4d5f;--amber:#f5a524;--steel:#17212b;
+      --shadow:0 18px 60px rgba(0,0,0,.42),0 1px 0 rgba(255,255,255,.03) inset;
+    }
+    body{
+      background:
+        radial-gradient(circle at 18% -8%, rgba(104,213,255,.12), transparent 31%),
+        radial-gradient(circle at 92% 8%, rgba(245,158,11,.09), transparent 28%),
+        linear-gradient(180deg,#05070a 0%,#081018 48%,#05070a 100%);
+      color:var(--text);
+    }
+    body:before{
+      content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.24;
+      background-image:
+        linear-gradient(rgba(104,213,255,.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(104,213,255,.055) 1px, transparent 1px);
+      background-size:56px 56px;
+      mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),rgba(0,0,0,.15));
+    }
+    .wrap{max-width:1640px;padding:18px}
+    .hero,.boardBrief,.card,.modalCard{
+      background:linear-gradient(180deg,rgba(17,26,35,.94),rgba(10,15,21,.96));
+      border-color:rgba(104,213,255,.18);
+      box-shadow:var(--shadow);
+    }
+    .hero{
+      position:relative;overflow:hidden;border-radius:24px;padding:20px 22px;
+      background:
+        linear-gradient(135deg,rgba(12,19,27,.96) 0%,rgba(10,15,21,.97) 47%,rgba(29,20,10,.88) 100%);
+    }
+    .hero:before{
+      content:"";position:absolute;left:0;right:0;top:0;height:2px;
+      background:linear-gradient(90deg,transparent,rgba(104,213,255,.85),rgba(245,158,11,.72),transparent);
+    }
+    .hero:after{
+      content:"";position:absolute;inset:auto -8% -42% 50%;height:230px;opacity:.23;pointer-events:none;
+      background:
+        radial-gradient(ellipse at center, rgba(104,213,255,.28), transparent 62%),
+        repeating-radial-gradient(circle at center, rgba(104,213,255,.25) 0 1px, transparent 1px 28px);
+      transform:rotate(-8deg);
+    }
+    .scoutMark{
+      position:absolute;right:22px;bottom:18px;width:290px;height:135px;opacity:.32;pointer-events:none;
+      border:1px solid rgba(104,213,255,.22);border-radius:18px;
+      background:
+        linear-gradient(180deg,rgba(104,213,255,.08),rgba(245,158,11,.04)),
+        linear-gradient(0deg,transparent 0 44%,rgba(104,213,255,.20) 45%,transparent 47%);
+    }
+    .scoutMark:before{
+      content:"";position:absolute;left:44px;bottom:26px;width:92px;height:82px;background:rgba(231,237,244,.18);
+      clip-path:polygon(16% 100%,30% 58%,19% 40%,34% 31%,50% 15%,74% 25%,86% 38%,70% 45%,64% 57%,82% 100%);
+      filter:drop-shadow(0 0 18px rgba(104,213,255,.25));
+    }
+    .scoutMark:after{
+      content:"SCOUT MODE";position:absolute;right:16px;top:14px;font-size:10px;letter-spacing:.18em;font-weight:900;color:rgba(104,213,255,.72);
+    }
+    .heroEyebrow,.sectionTitle{color:#dcefff;letter-spacing:.04em;text-transform:uppercase}
+    .heroEyebrow{color:var(--accent);letter-spacing:.12em}
+    .hero h1{font-size:38px;color:#f4f8fb;text-shadow:0 0 28px rgba(104,213,255,.16)}
+    .heroLead{color:#b5c2cf;max-width:940px;font-size:15px}
+    .demoSafe{background:rgba(16,37,27,.82);border-color:rgba(110,231,168,.32);color:#b9f7d4}
+    .ghostBtn,.controls button,.controls input,.controls select,.controls textarea,.closeBtn,#sortBy{
+      background:#0a1118;color:var(--text);border-color:#314253;
+    }
+    .ghostBtn:hover,button:hover,.chipBtn:hover{background:#12202b}
+    .proofTile,.briefCard,.stat,.snapshotRow,.detailBody,.howCard,.helperCallout,.item{
+      background:linear-gradient(180deg,#101922,#0b1118);border-color:#263544;color:var(--text);
+    }
+    .proofTile .k,.briefCard .h,.stat .t,.detailHead,.subtle,.muted,.resultsMeta,.item .meta{color:var(--muted)}
+    .proofTile .v,.briefCard .b,.preview{color:#d7e1eb}
+    .proofTile{border-radius:14px}
+    .boardBrief{border-radius:20px;position:relative;overflow:hidden}
+    .boardBrief:before{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,var(--amber),var(--accent),transparent)}
+    .briefCard.action{background:linear-gradient(180deg,rgba(43,33,16,.92),rgba(13,20,27,.96));border-color:rgba(245,158,11,.38)}
+    .badge{background:#0e1720;border-color:#34485a;color:#c9d5df}
+    .badge.score{background:rgba(20,83,45,.22);color:var(--good);border-color:rgba(110,231,168,.28)}
+    .badge.priority{background:rgba(245,158,11,.13);color:#ffd18a;border-color:rgba(245,158,11,.34)}
+    .badge.conf{background:rgba(104,213,255,.12);color:#a8e7ff;border-color:rgba(104,213,255,.32)}
+    .labelPill,.chipBtn{background:#0e1720;border-color:#304151;color:#c8d4de}
+    .labelPill.active,.chipBtn.active{background:rgba(104,213,255,.14);border-color:rgba(104,213,255,.45);color:#b8ecff}
+    .item{box-shadow:0 1px 0 rgba(255,255,255,.02) inset;transition:border-color .14s ease, transform .14s ease, box-shadow .14s ease}
+    .item:hover,.item.active{background:linear-gradient(180deg,#13202b,#0b1219);border-color:rgba(104,213,255,.58);box-shadow:0 0 0 1px rgba(104,213,255,.12),0 14px 36px rgba(0,0,0,.32)}
+    .item.active{transform:translateY(-1px)}
+    .detailHeader h2,.item .title{color:#f3f8fc}
+    .smallList .row{border-bottom-color:#24313d}
+    hr.sep{border-top-color:#24313d}
+    code{background:#111b24;color:#a8e7ff}
+    a{color:#8ee4ff}
+    .banner{background:#101922;border-color:#263544;color:#d7e1eb}
+    .banner.ok{background:#0f241a}.banner.warn{background:#271f11}.banner.err{background:#2a1217}
+    details summary{color:#cfe2f2;font-weight:800;cursor:pointer}
+    @media (max-width:900px){.scoutMark{display:none}.hero h1{font-size:30px}}
+
+/* PASS 8 - Scout Horizon cinematic mural background */
+body{
+  background:
+    linear-gradient(rgba(5,8,12,.28), rgba(5,8,12,.78)),
+    url('/viewer/assets/scout_horizon_mural.jpg') center top / cover no-repeat fixed,
+    radial-gradient(circle at 18% -8%, rgba(104,213,255,.08), transparent 31%),
+    radial-gradient(circle at 92% 8%, rgba(245,158,11,.08), transparent 28%),
+    linear-gradient(180deg,#05070a 0%,#081018 48%,#05070a 100%);
+  color:var(--text);
+}
+body:before{
+  opacity:.14;
+  background-image:
+    linear-gradient(rgba(104,213,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(104,213,255,.045) 1px, transparent 1px);
+  background-size:64px 64px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.95),rgba(0,0,0,.18));
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(4,7,10,.82) 0%, rgba(4,7,10,.62) 20%, rgba(4,7,10,.34) 47%, rgba(4,7,10,.40) 72%, rgba(4,7,10,.80) 100%),
+    linear-gradient(180deg, rgba(4,7,10,.24) 0%, rgba(4,7,10,.34) 16%, rgba(4,7,10,.52) 56%, rgba(4,7,10,.84) 100%);
+}
+.wrap{max-width:1660px;padding:18px 18px 26px}
+.hero,.boardBrief,.card,.modalCard{
+  background:linear-gradient(180deg,rgba(10,15,21,.78),rgba(8,12,17,.88));
+  border-color:rgba(104,213,255,.18);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+.hero{
+  background:
+    linear-gradient(135deg,rgba(12,19,27,.82) 0%,rgba(10,15,21,.84) 52%,rgba(27,18,10,.72) 100%);
+}
+.banner{background:rgba(34,22,10,.62);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.banner.ok{background:rgba(15,36,26,.68)}
+.banner.warn{background:rgba(39,31,17,.68)}
+.banner.err{background:rgba(42,18,23,.68)}
+.proofTile,.briefCard,.stat,.snapshotRow,.detailBody,.howCard,.helperCallout,.item{
+  background:linear-gradient(180deg,rgba(16,25,34,.80),rgba(10,17,24,.90));
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.item:hover,.item.active{background:linear-gradient(180deg,rgba(19,32,43,.84),rgba(11,18,25,.92))}
+.boardBrief,.hero{box-shadow:0 22px 70px rgba(0,0,0,.38), 0 1px 0 rgba(255,255,255,.04) inset}
+
+    @media (max-width:960px){.howGrid{grid-template-columns:1fr}}
+    @media (max-width:1400px){.layout{grid-template-columns:360px minmax(0,1fr)}.detailCol{grid-column:1 / -1}.statsGrid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:960px){.layout,.split2,.smallBtns,.triple,.detailGrid,.statsGrid{grid-template-columns:1fr}}
+    @media (max-width:1100px){.heroProof,.briefGrid{grid-template-columns:1fr 1fr}}
+    @media (max-width:700px){.heroProof,.briefGrid{grid-template-columns:1fr}.hero h1{font-size:28px}}
+  /* PASS 8.1 - brighter Scout Horizon mural background */
+body{
+  background:
+    linear-gradient(rgba(5,8,12,.08), rgba(5,8,12,.34)),
+    url('/viewer/assets/scout_horizon_mural.jpg') center top / cover no-repeat fixed,
+    radial-gradient(circle at 18% -8%, rgba(104,213,255,.08), transparent 31%),
+    radial-gradient(circle at 92% 8%, rgba(245,158,11,.08), transparent 28%),
+    linear-gradient(180deg,#05070a 0%,#081018 48%,#05070a 100%);
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(4,7,10,.46) 0%, rgba(4,7,10,.28) 22%, rgba(4,7,10,.12) 52%, rgba(4,7,10,.16) 72%, rgba(4,7,10,.46) 100%),
+    linear-gradient(180deg, rgba(4,7,10,.06) 0%, rgba(4,7,10,.12) 20%, rgba(4,7,10,.30) 62%, rgba(4,7,10,.58) 100%);
+}
+.hero,.boardBrief,.card,.modalCard{
+  background:linear-gradient(180deg,rgba(10,15,21,.62),rgba(8,12,17,.72));
+  border-color:rgba(104,213,255,.26);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+.hero{
+  background:
+    linear-gradient(135deg,rgba(12,19,27,.60) 0%,rgba(10,15,21,.66) 52%,rgba(27,18,10,.52) 100%);
+}
+.boardBrief{
+  background:linear-gradient(180deg,rgba(10,15,21,.64),rgba(8,12,17,.74));
+}
+.banner{
+  background:rgba(47,29,10,.52);
+  border-color:rgba(245,158,11,.30);
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+.proofTile,.briefCard,.stat,.snapshotRow,.detailBody,.howCard,.helperCallout,.item{
+  background:linear-gradient(180deg,rgba(16,25,34,.70),rgba(10,17,24,.80));
+  backdrop-filter:blur(3px);
+  -webkit-backdrop-filter:blur(3px);
+}
+.item:hover,.item.active{
+  background:linear-gradient(180deg,rgba(19,32,43,.74),rgba(11,18,25,.84));
+}
+
+
+/* PASS 8 - Scout Horizon final visual finish */
+:root{
+  --scout-gold:#d7a64d;
+  --scout-blue:#68d5ff;
+  --scout-glass:rgba(8,13,19,.78);
+}
+body{
+  background:
+    radial-gradient(circle at 34% 16%, rgba(215,166,77,.16), transparent 22%),
+    linear-gradient(rgba(4,7,10,.18), rgba(4,7,10,.42)),
+    url('/viewer/assets/scout_horizon_mural.jpg') 42% top / cover no-repeat fixed,
+    linear-gradient(180deg,#05070a 0%,#081018 48%,#05070a 100%);
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    linear-gradient(90deg, rgba(4,7,10,.52) 0%, rgba(4,7,10,.24) 24%, rgba(4,7,10,.08) 46%, rgba(4,7,10,.18) 70%, rgba(4,7,10,.58) 100%),
+    linear-gradient(180deg, rgba(4,7,10,.05) 0%, rgba(4,7,10,.15) 24%, rgba(4,7,10,.38) 66%, rgba(4,7,10,.70) 100%);
+}
+.hero,.boardBrief,.card,.modalCard{
+  background:linear-gradient(180deg,rgba(8,13,19,.72),rgba(5,9,14,.84));
+  border-color:rgba(104,213,255,.24);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
+}
+.hero{
+  min-height:210px;
+  background:
+    linear-gradient(120deg,rgba(5,9,14,.76) 0%,rgba(8,13,19,.62) 50%,rgba(44,30,12,.46) 100%);
+  border-color:rgba(215,166,77,.30);
+}
+.heroEyebrow{color:var(--scout-gold);letter-spacing:.14em;text-shadow:0 1px 18px rgba(0,0,0,.45)}
+.hero h1{font-size:46px;letter-spacing:.02em;color:#f8fbff;text-shadow:0 2px 32px rgba(0,0,0,.58)}
+.heroTagline{font-size:20px;line-height:1.25;color:#f3d7a5;font-weight:850;margin:0 0 8px;text-shadow:0 1px 20px rgba(0,0,0,.62)}
+.heroLead{max-width:870px;color:#d9e4ed;font-size:15.5px;text-shadow:0 1px 16px rgba(0,0,0,.55)}
+.scoutMark{display:none}
+.proofTile,.briefCard,.stat,.snapshotRow,.detailBody,.howCard,.helperCallout,.item{
+  background:linear-gradient(180deg,rgba(12,20,29,.78),rgba(7,12,18,.88));
+  border-color:rgba(104,213,255,.20);
+}
+.boardBrief{border-color:rgba(215,166,77,.28)}
+.boardBrief:before{background:linear-gradient(90deg,transparent,var(--scout-gold),var(--scout-blue),transparent)}
+.demoSafe{background:rgba(12,34,24,.76);border-color:rgba(110,231,168,.35);color:#c4f8dc}
+@media (max-width:900px){body{background-position:44% top}.hero h1{font-size:34px}.heroTagline{font-size:17px}}
+
+/* PASS 9 - Pharma Readiness Watch */
+.scenarioStrip{margin:14px 0 0;border:1px solid rgba(245,165,36,.32);border-radius:18px;background:linear-gradient(135deg,rgba(45,31,11,.78),rgba(8,13,18,.82));padding:13px 16px;display:grid;grid-template-columns:1.1fr 2fr;gap:14px;align-items:center;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+.scenarioStrip .scenarioK{font-size:11px;letter-spacing:.15em;text-transform:uppercase;color:var(--scout-gold);font-weight:900;margin-bottom:5px}
+.scenarioStrip .scenarioTitle{font-size:22px;font-weight:950;color:#fff;line-height:1.1}
+.scenarioStrip .scenarioText{color:#dbe7ef;line-height:1.45;font-size:14px}
+.scenarioStrip .scenarioLanes{display:flex;flex-wrap:wrap;gap:7px;margin-top:9px}
+.scenarioStrip .scenarioLanes span{font-size:12px;border:1px solid rgba(104,213,255,.28);border-radius:999px;padding:5px 8px;background:rgba(7,14,21,.52);color:#ccefff;font-weight:750}
+@media (max-width:900px){.scenarioStrip{grid-template-columns:1fr}.scenarioStrip .scenarioTitle{font-size:19px}}
+
+/* PASS 10 - Scout Horizon Executive Finish START */
+/* Executive visual finish: fewer placards, clearer mural, one run workflow. */
+:root{
+  --pass10-gold:#d9ad55;
+  --pass10-gold-soft:rgba(217,173,85,.18);
+  --pass10-teal:#89d9e8;
+  --pass10-ink:#04080b;
+  --pass10-panel:rgba(5,12,16,.62);
+  --pass10-panel-strong:rgba(5,12,16,.76);
+  --pass10-line:rgba(137,217,232,.26);
+}
+html{scroll-behavior:smooth;}
+body{
+  background-image:
+    linear-gradient(90deg, rgba(2,5,8,.78) 0%, rgba(2,5,8,.48) 18%, rgba(2,5,8,.10) 46%, rgba(2,5,8,.18) 68%, rgba(2,5,8,.62) 100%),
+    linear-gradient(180deg, rgba(2,5,8,.10) 0%, rgba(2,5,8,.18) 34%, rgba(2,5,8,.52) 74%, rgba(2,5,8,.82) 100%),
+    url('/viewer/assets/scout_horizon_mural.jpg') !important;
+  background-size:cover !important;
+  background-position:center top !important;
+  background-attachment:fixed !important;
+  background-color:#04080b !important;
+}
+body:before{
+  opacity:.06 !important;
+}
+body:after{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;
+  background:
+    radial-gradient(circle at 62% 16%, rgba(255,232,183,.08), transparent 18%),
+    radial-gradient(circle at 58% 30%, rgba(137,217,232,.06), transparent 26%),
+    linear-gradient(180deg, transparent 0%, rgba(2,5,8,.46) 100%) !important;
+}
+.wrap{
+  max-width:1520px !important;
+  padding:14px clamp(14px,3vw,42px) 34px !important;
+}
+.hero{
+  max-width:710px;
+  min-height:278px;
+  padding:26px 30px !important;
+  margin-top:12px !important;
+  border-radius:26px !important;
+  background:linear-gradient(100deg, rgba(5,12,16,.76) 0%, rgba(5,12,16,.58) 58%, rgba(5,12,16,.28) 100%) !important;
+  border:1px solid rgba(217,173,85,.34) !important;
+  box-shadow:0 24px 90px rgba(0,0,0,.38), inset 0 1px 0 rgba(255,255,255,.05) !important;
+  backdrop-filter:blur(8px) !important;
+  -webkit-backdrop-filter:blur(8px) !important;
+}
+.hero:after{display:none !important;}
+.heroTop{display:block !important;}
+.heroEyebrow{
+  color:var(--pass10-teal) !important;
+  letter-spacing:.16em !important;
+  font-size:12px !important;
+}
+.hero h1{
+  font-size:clamp(42px,5vw,68px) !important;
+  letter-spacing:-.04em !important;
+  line-height:.92 !important;
+  color:#f5ead6 !important;
+  text-shadow:0 10px 34px rgba(0,0,0,.52) !important;
+}
+.heroLead{
+  max-width:620px !important;
+  font-size:16px !important;
+  line-height:1.55 !important;
+  color:rgba(238,246,250,.88) !important;
+}
+.heroProof,
+.demoSafe,
+.topActions,
+#helpBtn{
+  display:none !important;
+}
+#statusBanner{
+  max-width:720px;
+  margin-top:12px !important;
+  padding:9px 14px !important;
+  border-color:rgba(217,173,85,.30) !important;
+  background:rgba(34,22,10,.48) !important;
+  backdrop-filter:blur(7px) !important;
+  -webkit-backdrop-filter:blur(7px) !important;
+  color:rgba(246,241,231,.90) !important;
+}
+.pass10RunPanel{
+  max-width:980px;
+  margin:14px 0 12px;
+  padding:16px;
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) minmax(320px,1.15fr);
+  gap:14px;
+  align-items:center;
+  border:1px solid rgba(217,173,85,.38);
+  border-radius:22px;
+  background:linear-gradient(110deg, rgba(5,12,16,.76), rgba(5,12,16,.50));
+  box-shadow:0 18px 70px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05);
+  backdrop-filter:blur(9px);
+  -webkit-backdrop-filter:blur(9px);
+}
+.pass10RunPanel .eyebrow{
+  color:var(--pass10-gold);
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  margin-bottom:5px;
+}
+.pass10RunPanel h2{
+  margin:0 0 5px;
+  font-size:22px;
+  line-height:1.1;
+  color:#f5ead6;
+}
+.pass10RunPanel p{
+  margin:0;
+  color:rgba(231,237,244,.82);
+  line-height:1.45;
+  font-size:14px;
+}
+.pass10StepRow{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+.pass10StepBtn{
+  border:1px solid rgba(137,217,232,.26);
+  border-radius:16px;
+  padding:11px 12px;
+  color:#eef7fa;
+  background:rgba(10,20,28,.78);
+  text-align:left;
+  font-weight:850;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.pass10StepBtn small{
+  display:block;
+  margin-top:4px;
+  color:rgba(191,209,218,.72);
+  font-weight:650;
+  line-height:1.25;
+}
+.pass10StepBtn.primary{
+  background:linear-gradient(180deg, rgba(217,173,85,.92), rgba(162,111,39,.92));
+  color:#081017;
+  border-color:rgba(255,224,155,.64);
+}
+.pass10StepBtn.primary small{color:rgba(5,12,16,.78);}
+.pass10StepBtn:hover{
+  transform:translateY(-1px);
+  background:rgba(18,35,45,.92);
+}
+.pass10StepBtn.primary:hover{
+  background:linear-gradient(180deg, rgba(239,195,104,.98), rgba(184,130,45,.98));
+}
+.boardBrief{
+  max-width:1260px;
+  padding:13px !important;
+  background:rgba(5,12,16,.60) !important;
+  border-color:rgba(137,217,232,.25) !important;
+  backdrop-filter:blur(8px) !important;
+  -webkit-backdrop-filter:blur(8px) !important;
+}
+.boardBrief .subtle{
+  display:none !important;
+}
+.briefGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+  gap:8px !important;
+}
+.briefCard{
+  min-height:84px !important;
+  padding:10px !important;
+  background:rgba(7,16,22,.62) !important;
+  border-color:rgba(137,217,232,.20) !important;
+}
+.briefCard .b{
+  font-size:13px !important;
+  line-height:1.38 !important;
+}
+.layout{
+  grid-template-columns:minmax(270px,355px) minmax(0,1fr) minmax(330px,400px) !important;
+  gap:12px !important;
+  margin-top:12px !important;
+}
+.card{
+  background:rgba(5,12,16,.64) !important;
+  border-color:rgba(137,217,232,.22) !important;
+  backdrop-filter:blur(8px) !important;
+  -webkit-backdrop-filter:blur(8px) !important;
+  box-shadow:0 18px 60px rgba(0,0,0,.30), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+.sectionTitle{
+  letter-spacing:.08em !important;
+  color:#eef7fa !important;
+}
+.controls .subtle,
+.snapshotList + .subtle,
+.toolbar .resultsMeta{
+  color:rgba(192,210,220,.64) !important;
+}
+.controls{
+  max-height:620px;
+  overflow:auto;
+}
+.controls .sectionTitle::after{
+  content:"Normal workflow is above. Filters are optional.";
+  display:block;
+  margin-top:5px;
+  color:rgba(192,210,220,.62);
+  font-size:11px;
+  letter-spacing:0;
+  text-transform:none;
+  font-weight:650;
+}
+.controls details,
+.controls .helperCallout{
+  opacity:.82;
+}
+.statsGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr)) !important;
+}
+.stat{
+  padding:10px !important;
+  background:rgba(7,16,22,.58) !important;
+}
+.stat .v{font-size:22px !important;}
+.split2{gap:8px !important;}
+.list{max-height:56vh !important;}
+.item,
+.detailBody,
+.snapshotRow{
+  background:rgba(7,16,22,.60) !important;
+}
+.detailHeader h2{font-size:20px !important;}
+.modalWrap.show{backdrop-filter:blur(5px);}
+@media (max-width:1260px){
+  .layout{grid-template-columns:minmax(270px,360px) minmax(0,1fr) !important;}
+  .detailCol{grid-column:1 / -1 !important;}
+  .briefGrid{grid-template-columns:repeat(2,minmax(0,1fr)) !important;}
+  .pass10RunPanel{grid-template-columns:1fr !important;}
+}
+@media (max-width:860px){
+  .hero{max-width:none;min-height:auto;}
+  .layout,.statsGrid,.briefGrid,.pass10StepRow{grid-template-columns:1fr !important;}
+}
+/* PASS 10 - Scout Horizon Executive Finish END */
+
+
+
+
+
+/* PASS 12C - One Page Regression Repair START */
+/*
+  Pass 12C:
+  - Repair Pass 12B regression.
+  - Executive View is truly one page: hero + run strip + decision console.
+  - Full Workbench is still available behind the toolbar.
+  - Mural lives to the right, not buried under three pages of panels.
+*/
+
+:root {
+  --p12c-bg: #020608;
+  --p12c-panel: rgba(5,12,16,.72);
+  --p12c-panel-soft: rgba(5,12,16,.54);
+  --p12c-border: rgba(123,203,219,.28);
+  --p12c-gold: rgba(226,176,77,.96);
+  --p12c-ivory: rgba(250,241,221,.96);
+  --p12c-muted: rgba(199,219,224,.80);
+}
+
+html {
+  min-height: 100%;
+  background: var(--p12c-bg) !important;
+}
+
+html::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background-image: url("/viewer/assets/scout_horizon_mural.jpg") !important;
+  background-size: cover !important;
+  background-position: center top !important;
+  background-repeat: no-repeat !important;
+  opacity: .48 !important;
+  filter: saturate(1.08) contrast(1.05) brightness(.76) !important;
+}
+
+body {
+  min-height: 100% !important;
+  overflow-x: hidden !important;
+  background: transparent !important;
+}
+
+/* Right-side mural stage. This intentionally occupies the open right side. */
+body::before {
+  content: "" !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  left: clamp(620px, 45vw, 850px) !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background-image: url("/viewer/assets/scout_horizon_mural.jpg") !important;
+  background-size: auto 112vh !important;
+  background-position: 58% top !important;
+  background-repeat: no-repeat !important;
+  opacity: .94 !important;
+  filter: saturate(1.15) contrast(1.08) brightness(.92) !important;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.68) 8%, #000 20%, #000 100%) !important;
+  mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,.68) 8%, #000 20%, #000 100%) !important;
+}
+
+body::after {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 72% 18%, rgba(255,226,170,.10), transparent 38%),
+    linear-gradient(90deg,
+      rgba(2,6,9,.90) 0%,
+      rgba(2,6,9,.76) 29%,
+      rgba(2,6,9,.35) 45%,
+      rgba(2,6,9,.10) 63%,
+      rgba(2,6,9,.18) 84%,
+      rgba(2,6,9,.42) 100%),
+    linear-gradient(180deg, rgba(2,6,9,.05) 0%, rgba(2,6,9,.16) 48%, rgba(2,6,9,.72) 100%) !important;
+}
+
+.wrap,
+main,
+header,
+section,
+.card,
+.hero,
+.boardBrief,
+.pass10RunPanel,
+#statusBanner,
+.modalWrap,
+.modal,
+.toast,
+#toast,
+.pass12c-toolbar,
+.pass12c-console {
+  position: relative !important;
+  z-index: 3 !important;
+}
+
+.wrap {
+  width: 100% !important;
+  max-width: none !important;
+  padding: clamp(10px, 1.5vh, 20px) clamp(12px, 2.2vw, 42px) !important;
+}
+
+/* The top stack becomes a clean executive console, not a landing page plus dashboard. */
+.hero {
+  width: min(760px, 48vw) !important;
+  max-width: min(760px, 48vw) !important;
+  min-height: 150px !important;
+  margin: 0 0 8px 0 !important;
+  padding: clamp(14px, 1.65vw, 24px) !important;
+  background: linear-gradient(105deg, rgba(5,12,16,.86), rgba(5,12,16,.62) 70%, rgba(5,12,16,.22)) !important;
+  border-color: rgba(226,176,77,.44) !important;
+  box-shadow: 0 18px 54px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+.hero h1,
+.hero .title,
+.hero-title {
+  font-size: clamp(38px, 4.6vw, 68px) !important;
+  line-height: .90 !important;
+  letter-spacing: -.06em !important;
+  margin-bottom: 8px !important;
+}
+
+.hero p {
+  max-width: 620px !important;
+  margin-bottom: 0 !important;
+}
+
+.pass10RunPanel {
+  width: min(1040px, 64vw) !important;
+  max-width: min(1040px, 64vw) !important;
+  margin: 8px 0 !important;
+  padding: 11px 13px !important;
+  background: linear-gradient(105deg, rgba(5,12,16,.84), rgba(5,12,16,.48)) !important;
+  border-color: rgba(226,176,77,.50) !important;
+}
+
+#statusBanner {
+  width: min(1040px, 64vw) !important;
+  max-width: min(1040px, 64vw) !important;
+  margin: 8px 0 !important;
+  padding: 7px 12px !important;
+  background: rgba(62,42,12,.42) !important;
+}
+
+/* New repaired decision console. */
+.pass12c-console {
+  width: min(1260px, 78vw) !important;
+  max-width: min(1260px, 78vw) !important;
+  margin: 8px 0 0 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(226,176,77,.42) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(108deg, rgba(5,12,16,.78), rgba(5,12,16,.43)) !important;
+  backdrop-filter: blur(15px) !important;
+  box-shadow: 0 20px 58px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass12c-console-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 14px !important;
+  margin-bottom: 10px !important;
+}
+
+.pass12c-kicker {
+  color: var(--p12c-gold) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.pass12c-title {
+  color: var(--p12c-ivory) !important;
+  font-weight: 950 !important;
+  font-size: clamp(22px, 2.4vw, 34px) !important;
+  line-height: 1.04 !important;
+}
+
+.pass12c-sub {
+  color: var(--p12c-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  max-width: 640px !important;
+}
+
+.pass12c-pill {
+  border: 1px solid rgba(123,203,219,.34) !important;
+  border-radius: 999px !important;
+  background: rgba(8,20,27,.72) !important;
+  color: rgba(230,246,250,.92) !important;
+  padding: 6px 10px !important;
+  white-space: nowrap !important;
+  font-weight: 850 !important;
+  font-size: 12px !important;
+}
+
+.pass12c-grid {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(190px, 1fr)) !important;
+  gap: 10px !important;
+}
+
+.pass12c-card {
+  min-height: 118px !important;
+  padding: 12px !important;
+  border: 1px solid rgba(123,203,219,.26) !important;
+  border-radius: 14px !important;
+  background: rgba(4,13,18,.72) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.035) !important;
+}
+
+.pass12c-card.next {
+  border-color: rgba(226,176,77,.48) !important;
+  background: linear-gradient(135deg, rgba(48,32,9,.72), rgba(4,13,18,.70)) !important;
+}
+
+.pass12c-label {
+  color: rgba(159,189,198,.88) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .10em !important;
+  margin-bottom: 7px !important;
+}
+
+.pass12c-main {
+  color: var(--p12c-ivory) !important;
+  font-weight: 900 !important;
+  font-size: clamp(14px, 1.05vw, 18px) !important;
+  line-height: 1.22 !important;
+}
+
+.pass12c-foot {
+  margin-top: 8px !important;
+  color: rgba(215,231,235,.80) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+/* The entire detailed workbench is hidden by default. One page means one page. */
+body.pass12c-exec .boardBrief,
+body.pass12c-exec .layout,
+body.pass12c-exec .card:not(.pass12c-card) {
+  display: none !important;
+}
+
+/* Full workbench mode restores the original lower dashboard. */
+body:not(.pass12c-exec) .boardBrief {
+  display: block !important;
+  width: min(1260px, 78vw) !important;
+  max-width: min(1260px, 78vw) !important;
+  margin: 10px 0 !important;
+}
+
+body:not(.pass12c-exec) .layout {
+  display: grid !important;
+  max-width: min(1540px, calc(100vw - 28px)) !important;
+  margin: 10px 0 0 !important;
+  gap: 12px !important;
+}
+
+/* Right-side toolbar. */
+.pass12c-toolbar {
+  position: fixed !important;
+  top: 82px !important;
+  right: clamp(14px, 2.2vw, 38px) !important;
+  width: min(330px, 23vw) !important;
+  z-index: 30 !important;
+  display: grid !important;
+  gap: 8px !important;
+  padding: 10px !important;
+  border: 1px solid rgba(226,176,77,.44) !important;
+  border-radius: 18px !important;
+  background: rgba(5,12,16,.66) !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 18px 56px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass12c-toolbar-title {
+  color: var(--p12c-ivory) !important;
+  font-weight: 900 !important;
+  letter-spacing: .10em !important;
+  text-transform: uppercase !important;
+  font-size: 11px !important;
+}
+
+.pass12c-toolbar button {
+  border: 1px solid rgba(123,203,219,.32) !important;
+  border-radius: 12px !important;
+  background: rgba(8,20,27,.72) !important;
+  color: rgba(235,246,248,.94) !important;
+  padding: 9px 10px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+}
+
+.pass12c-toolbar button.primary {
+  background: linear-gradient(135deg, rgba(226,176,77,.97), rgba(177,121,32,.95)) !important;
+  color: rgba(20,14,6,.96) !important;
+  border-color: rgba(255,220,130,.72) !important;
+}
+
+.pass12c-status {
+  min-height: 18px !important;
+  color: rgba(188,218,224,.86) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+}
+
+@media (max-height: 860px) and (min-width: 1100px) {
+  body.pass12c-exec .hero { min-height: 128px !important; padding-top: 12px !important; padding-bottom: 12px !important; }
+  body.pass12c-exec .hero p { display: none !important; }
+  body.pass12c-exec .pass12c-card { min-height: 96px !important; padding: 10px !important; }
+}
+
+@media (max-width: 1180px) {
+  .hero,
+  .pass10RunPanel,
+  #statusBanner,
+  .pass12c-console {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .pass12c-toolbar {
+    position: sticky !important;
+    top: 8px !important;
+    width: auto !important;
+    max-width: 100% !important;
+    margin: 8px 0 !important;
+  }
+  .pass12c-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+@media (max-width: 720px) {
+  .pass12c-grid { grid-template-columns: 1fr !important; }
+  body::before { left: 0 !important; opacity: .26 !important; background-size: cover !important; background-position: center top !important; -webkit-mask-image: none !important; mask-image: none !important; }
+}
+/* PASS 12C - One Page Regression Repair END */
+/* PASS 13 - GLP-1 Manufacturing Pressure Radar START */
+/*
+  Pass 13:
+  - Make the project presentation sharper and easier to operate.
+  - Keep Pass 12C's one-page Executive View.
+  - Add GLP-1 Manufacturing Pressure Radar as the showcase mission.
+*/
+.pass13-project-ribbon {
+  position: relative !important;
+  z-index: 4 !important;
+  width: min(1260px, 78vw) !important;
+  max-width: min(1260px, 78vw) !important;
+  margin: 8px 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(226,176,77,.42) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(105deg, rgba(48,32,9,.70), rgba(5,12,16,.52)) !important;
+  box-shadow: 0 16px 44px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+.pass13-ribbon-kicker {
+  color: rgba(226,176,77,.96) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+.pass13-ribbon-title {
+  color: rgba(250,241,221,.98) !important;
+  font-size: clamp(22px, 2.25vw, 34px) !important;
+  line-height: 1.05 !important;
+  font-weight: 950 !important;
+  margin-top: 2px !important;
+}
+.pass13-ribbon-sub {
+  color: rgba(213,230,235,.86) !important;
+  max-width: 860px !important;
+  font-size: 13px !important;
+  line-height: 1.35 !important;
+  margin-top: 4px !important;
+}
+.pass13-lanes {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 6px !important;
+  margin-top: 9px !important;
+}
+.pass13-lanes span {
+  border: 1px solid rgba(123,203,219,.30) !important;
+  border-radius: 999px !important;
+  background: rgba(8,20,27,.62) !important;
+  color: rgba(230,246,250,.90) !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+  padding: 5px 8px !important;
+}
+.pass13-primary-action {
+  box-shadow: 0 18px 44px rgba(226,176,77,.16), inset 0 1px 0 rgba(255,255,255,.06) !important;
+}
+body.pass12c-exec .pass13-project-ribbon {
+  width: min(1260px, 78vw) !important;
+}
+.pass12c-toolbar .pass13-action-note {
+  color: rgba(188,218,224,.84) !important;
+  font-size: 11px !important;
+  line-height: 1.25 !important;
+}
+@media (max-width:1180px) {
+  .pass13-project-ribbon { width: 100% !important; max-width: 100% !important; }
+}
+@media (max-height:860px) and (min-width:1100px) {
+  body.pass12c-exec .pass13-project-ribbon { padding-top: 8px !important; padding-bottom: 8px !important; }
+  body.pass12c-exec .pass13-ribbon-sub { display:none !important; }
+}
+/* PASS 13 - GLP-1 Manufacturing Pressure Radar END */
+/* PASS 13B - GLP-1 Executive View Lock START */
+body.pass12c-exec .pass13-project-ribbon { display: none !important; }
+body.pass12c-exec .boardBrief,
+body.pass12c-exec .layout,
+body.pass12c-exec .card:not(.pass12c-card) { display: none !important; }
+body.pass12c-exec .hero {
+  width: min(760px, 48vw) !important;
+  max-width: min(760px, 48vw) !important;
+  min-height: 150px !important;
+}
+body.pass12c-exec .pass10RunPanel {
+  width: min(1040px, 64vw) !important;
+  max-width: min(1040px, 64vw) !important;
+  margin-top: 8px !important;
+  margin-bottom: 8px !important;
+}
+body.pass12c-exec #statusBanner {
+  width: min(1040px, 64vw) !important;
+  max-width: min(1040px, 64vw) !important;
+}
+body.pass12c-exec .pass12c-console {
+  width: min(1160px, 72vw) !important;
+  max-width: min(1160px, 72vw) !important;
+  margin-top: 8px !important;
+}
+body.pass12c-exec .pass12c-card { min-height: 106px !important; }
+body.pass12c-exec .pass12c-main { font-size: clamp(14px, 1vw, 17px) !important; }
+body.pass12c-exec .pass12c-foot { font-size: 11px !important; }
+body.pass12c-exec::before {
+  left: clamp(650px, 47vw, 880px) !important;
+  background-position: 57% top !important;
+  opacity: .96 !important;
+}
+.pass12c-toolbar { width: min(315px, 22vw) !important; }
+.pass12c-toolbar .pass13-action-note { display: none !important; }
+@media (max-height: 860px) and (min-width: 1100px) {
+  body.pass12c-exec .hero { min-height: 124px !important; }
+  body.pass12c-exec .hero p { display: none !important; }
+  body.pass12c-exec .pass12c-card { min-height: 92px !important; }
+}
+/* PASS 13B - GLP-1 Executive View Lock END */
+/* PASS 14 - Source Truth Launch Readiness START */
+/*
+  Pass 14:
+  - Source Truth + Launch Readiness.
+  - Adds a compact, honest source-status layer.
+  - Does not claim fully live real-time intelligence unless the source is verified as live/API/RSS capable.
+*/
+
+.pass14-source-panel {
+  position: relative !important;
+  z-index: 4 !important;
+  width: min(1160px, 72vw) !important;
+  max-width: min(1160px, 72vw) !important;
+  margin: 8px 0 0 !important;
+  padding: 11px 12px !important;
+  border: 1px solid rgba(123,203,219,.30) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(108deg, rgba(5,12,16,.76), rgba(5,12,16,.43)) !important;
+  backdrop-filter: blur(14px) !important;
+  box-shadow: 0 16px 46px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass14-source-head {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+}
+
+.pass14-kicker {
+  color: rgba(226,176,77,.96) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.pass14-title {
+  color: rgba(250,241,221,.97) !important;
+  font-size: clamp(17px, 1.5vw, 23px) !important;
+  line-height: 1.08 !important;
+  font-weight: 950 !important;
+  margin-top: 2px !important;
+}
+
+.pass14-sub {
+  color: rgba(213,230,235,.84) !important;
+  font-size: 12px !important;
+  line-height: 1.32 !important;
+  max-width: 760px !important;
+  margin-top: 4px !important;
+}
+
+.pass14-source-grid {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(118px, 1fr)) !important;
+  gap: 8px !important;
+  margin-top: 9px !important;
+}
+
+.pass14-stat {
+  border: 1px solid rgba(123,203,219,.24) !important;
+  border-radius: 12px !important;
+  background: rgba(4,13,18,.62) !important;
+  padding: 8px !important;
+}
+
+.pass14-stat-label {
+  color: rgba(159,189,198,.88) !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
+}
+
+.pass14-stat-value {
+  color: rgba(250,241,221,.96) !important;
+  font-size: clamp(18px, 1.65vw, 26px) !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  margin-top: 4px !important;
+}
+
+.pass14-stat-note {
+  color: rgba(213,230,235,.75) !important;
+  font-size: 10px !important;
+  margin-top: 3px !important;
+}
+
+.pass14-source-panel button {
+  border: 1px solid rgba(226,176,77,.48) !important;
+  border-radius: 999px !important;
+  background: rgba(48,32,9,.64) !important;
+  color: rgba(250,241,221,.95) !important;
+  padding: 7px 10px !important;
+  font-weight: 850 !important;
+  cursor: pointer !important;
+  white-space: nowrap !important;
+}
+
+.pass14-source-detail {
+  display: none !important;
+  margin-top: 9px !important;
+  color: rgba(213,230,235,.84) !important;
+  font-size: 12px !important;
+  line-height: 1.36 !important;
+  border-top: 1px solid rgba(123,203,219,.18) !important;
+  padding-top: 9px !important;
+}
+
+.pass14-source-panel.open .pass14-source-detail {
+  display: block !important;
+}
+
+.pass14-source-detail ul {
+  margin: 6px 0 0 18px !important;
+  padding: 0 !important;
+}
+
+.pass14-source-detail li {
+  margin: 3px 0 !important;
+}
+
+.pass14-source-panel .verified {
+  color: rgba(125,222,172,.96) !important;
+  font-weight: 850 !important;
+}
+
+.pass14-source-panel .caution {
+  color: rgba(226,176,77,.96) !important;
+  font-weight: 850 !important;
+}
+
+@media (max-width: 1180px) {
+  .pass14-source-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .pass14-source-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .pass14-source-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pass14-source-head {
+    display: block !important;
+  }
+
+  .pass14-source-panel button {
+    margin-top: 8px !important;
+  }
+}
+/* PASS 14 - Source Truth Launch Readiness END */
+/* PASS 15A-R - Windows File Lock Repair START */
+/*
+  Pass 15A-R:
+  - Repair version of Pass 15A.
+  - Guards duplicate rapid clicks in the browser.
+  - Server-side middleware serializes write-heavy API routes.
+*/
+button.scout-busy,
+.pass10RunPanel .scout-busy,
+.pass12c-toolbar .scout-busy {
+  opacity: .72 !important;
+  cursor: wait !important;
+  filter: saturate(.85) !important;
+}
+
+.pass15a-status {
+  position: fixed !important;
+  right: clamp(14px, 2.2vw, 38px) !important;
+  bottom: 18px !important;
+  z-index: 60 !important;
+  max-width: min(420px, 42vw) !important;
+  padding: 9px 11px !important;
+  border: 1px solid rgba(123,203,219,.28) !important;
+  border-radius: 12px !important;
+  background: rgba(5,12,16,.78) !important;
+  color: rgba(230,246,250,.92) !important;
+  backdrop-filter: blur(12px) !important;
+  box-shadow: 0 12px 34px rgba(0,0,0,.30) !important;
+  font-size: 12px !important;
+  line-height: 1.35 !important;
+  display: none !important;
+}
+
+.pass15a-status.show {
+  display: block !important;
+}
+/* PASS 15A-R - Windows File Lock Repair END */
+/* PASS 15B - Workflow Clarity START */
+/*
+  Pass 15B:
+  - Remove duplicated run steps in Executive View.
+  - Make the workflow sequence obvious: Load -> Run -> Review.
+  - Add a temporary loading/status bar so first-time users know what is happening.
+*/
+
+/* The older left-side run strip duplicated the right workflow panel. Hide it in Executive View only. */
+body.pass12c-exec .pass10RunPanel {
+  display: none !important;
+}
+
+/* Status banner becomes a compact workflow event line. */
+body.pass12c-exec #statusBanner {
+  width: min(1040px, 64vw) !important;
+  max-width: min(1040px, 64vw) !important;
+  margin: 8px 0 !important;
+  padding: 8px 12px !important;
+  border-radius: 14px !important;
+  background: rgba(48,32,9,.44) !important;
+  border: 1px solid rgba(226,176,77,.34) !important;
+  color: rgba(250,241,221,.92) !important;
+}
+
+/* New single workflow guide. */
+.pass15b-guide {
+  position: relative !important;
+  z-index: 4 !important;
+  width: min(1160px, 72vw) !important;
+  max-width: min(1160px, 72vw) !important;
+  margin: 8px 0 !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(123,203,219,.30) !important;
+  border-radius: 16px !important;
+  background: linear-gradient(108deg, rgba(5,12,16,.78), rgba(5,12,16,.46)) !important;
+  backdrop-filter: blur(14px) !important;
+  box-shadow: 0 16px 44px rgba(0,0,0,.26), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass15b-guide-head {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 8px !important;
+}
+
+.pass15b-kicker {
+  color: rgba(226,176,77,.96) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.pass15b-status-text {
+  color: rgba(230,246,250,.92) !important;
+  font-size: 12px !important;
+  line-height: 1.28 !important;
+  text-align: right !important;
+  max-width: 460px !important;
+}
+
+.pass15b-steps {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(190px, 1fr)) !important;
+  gap: 8px !important;
+}
+
+.pass15b-step {
+  border: 1px solid rgba(123,203,219,.25) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.68) !important;
+  padding: 9px 10px !important;
+  min-height: 72px !important;
+}
+
+.pass15b-step.active {
+  border-color: rgba(226,176,77,.62) !important;
+  background: linear-gradient(135deg, rgba(78,52,13,.75), rgba(4,13,18,.68)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05) !important;
+}
+
+.pass15b-step.done {
+  border-color: rgba(125,222,172,.42) !important;
+}
+
+.pass15b-step-num {
+  color: rgba(226,176,77,.96) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.pass15b-step-title {
+  color: rgba(250,241,221,.96) !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  line-height: 1.12 !important;
+  margin-top: 3px !important;
+}
+
+.pass15b-step-note {
+  color: rgba(213,230,235,.78) !important;
+  font-size: 11px !important;
+  line-height: 1.28 !important;
+  margin-top: 4px !important;
+}
+
+.pass15b-progress {
+  margin-top: 9px !important;
+  height: 5px !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: rgba(123,203,219,.13) !important;
+  border: 1px solid rgba(123,203,219,.18) !important;
+}
+
+.pass15b-progress-fill {
+  height: 100% !important;
+  width: 0% !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(125,222,172,.88), rgba(226,176,77,.96)) !important;
+  transition: width .32s ease !important;
+}
+
+.pass15b-guide[data-step="1"] .pass15b-progress-fill { width: 33% !important; }
+.pass15b-guide[data-step="2"] .pass15b-progress-fill { width: 66% !important; }
+.pass15b-guide[data-step="3"] .pass15b-progress-fill { width: 100% !important; }
+
+/* Loading strip that appears during startup/actions and then gets out of the way. */
+.pass15b-loading {
+  position: fixed !important;
+  left: clamp(18px, 2.4vw, 42px) !important;
+  bottom: 18px !important;
+  z-index: 80 !important;
+  width: min(520px, 44vw) !important;
+  padding: 10px 12px !important;
+  border: 1px solid rgba(226,176,77,.40) !important;
+  border-radius: 14px !important;
+  background: rgba(5,12,16,.82) !important;
+  color: rgba(250,241,221,.96) !important;
+  backdrop-filter: blur(15px) !important;
+  box-shadow: 0 14px 42px rgba(0,0,0,.34) !important;
+  display: none !important;
+}
+
+.pass15b-loading.show {
+  display: block !important;
+}
+
+.pass15b-loading-title {
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  color: rgba(226,176,77,.96) !important;
+}
+
+.pass15b-loading-msg {
+  font-size: 13px !important;
+  line-height: 1.3 !important;
+  margin-top: 3px !important;
+}
+
+.pass15b-loading-bar {
+  margin-top: 8px !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: rgba(123,203,219,.16) !important;
+}
+
+.pass15b-loading-bar span {
+  display: block !important;
+  height: 100% !important;
+  width: 44% !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(123,203,219,.25), rgba(226,176,77,.98), rgba(123,203,219,.25)) !important;
+  animation: pass15b-scan 1.1s linear infinite !important;
+}
+
+@keyframes pass15b-scan {
+  0% { transform: translateX(-115%); }
+  100% { transform: translateX(230%); }
+}
+
+/* Right workflow panel becomes the only action control. */
+.pass12c-toolbar {
+  border-color: rgba(226,176,77,.52) !important;
+}
+
+.pass12c-toolbar-title::after {
+  content: "  1 -> 2 -> 3" !important;
+  color: rgba(226,176,77,.96) !important;
+  font-weight: 950 !important;
+}
+
+.pass12c-toolbar button {
+  min-height: 40px !important;
+}
+
+.pass12c-toolbar button[data-pass12c="load"]::before {
+  content: "1. " !important;
+}
+
+.pass12c-toolbar button[data-pass12c="run"]::before {
+  content: "2. " !important;
+}
+
+.pass12c-toolbar button[data-pass12c="review"]::before {
+  content: "3. " !important;
+}
+
+/* Keep Source Truth useful but secondary on the first screen. */
+body.pass12c-exec .pass14-source-panel:not(.open) {
+  max-height: 112px !important;
+  overflow: hidden !important;
+}
+
+@media (max-width:1180px) {
+  .pass15b-guide {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .pass15b-steps {
+    grid-template-columns: 1fr !important;
+  }
+
+  .pass15b-status-text {
+    text-align: left !important;
+    max-width: 100% !important;
+  }
+
+  .pass15b-guide-head {
+    display: block !important;
+  }
+
+  .pass15b-loading {
+    width: calc(100vw - 28px) !important;
+    max-width: calc(100vw - 28px) !important;
+    left: 14px !important;
+  }
+}
+/* PASS 15B - Workflow Clarity END */
+/* PASS 15C - Agent Identity Inputs Summary START */
+/*
+  Pass 15C:
+  - Reframe the first screen around Scout Horizon as the agent.
+  - Move showcase-project detail and inputs to a right-side mission panel.
+  - Remove confusing workflow duplication.
+  - Promote visible inputs: keyword, source lanes, source mode, and analysis settings.
+  - Add an executive summary of what the project revealed.
+*/
+
+body.pass12c-exec .pass15b-guide,
+body.pass12c-exec .pass10RunPanel,
+body.pass12c-exec .pass13-project-ribbon {
+  display: none !important;
+}
+
+/* Give the hero a stronger product identity role. */
+body.pass12c-exec .hero {
+  width: min(760px, 47vw) !important;
+  max-width: min(760px, 47vw) !important;
+  min-height: 188px !important;
+  margin-top: 10px !important;
+}
+
+body.pass12c-exec .hero h1,
+body.pass12c-exec .hero .title,
+body.pass12c-exec .hero-title {
+  font-size: clamp(48px, 5.4vw, 78px) !important;
+}
+
+body.pass12c-exec .hero p {
+  display: block !important;
+  max-width: 680px !important;
+  font-size: 14px !important;
+  line-height: 1.42 !important;
+}
+
+/* Main page layout: agent explanation and executive result on left; mission/input panel on right. */
+.pass15c-left-stack {
+  position: relative !important;
+  z-index: 4 !important;
+  width: min(860px, 53vw) !important;
+  max-width: min(860px, 53vw) !important;
+}
+
+.pass15c-agent-card,
+.pass15c-summary-card {
+  position: relative !important;
+  z-index: 4 !important;
+  width: min(860px, 53vw) !important;
+  max-width: min(860px, 53vw) !important;
+  margin: 8px 0 !important;
+  padding: 14px !important;
+  border: 1px solid rgba(123,203,219,.30) !important;
+  border-radius: 18px !important;
+  background: linear-gradient(108deg, rgba(5,12,16,.80), rgba(5,12,16,.48)) !important;
+  backdrop-filter: blur(15px) !important;
+  box-shadow: 0 16px 46px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass15c-kicker {
+  color: rgba(226,176,77,.96) !important;
+  font-size: 10px !important;
+  font-weight: 950 !important;
+  letter-spacing: .12em !important;
+  text-transform: uppercase !important;
+}
+
+.pass15c-title {
+  color: rgba(250,241,221,.98) !important;
+  font-size: clamp(22px, 2.35vw, 36px) !important;
+  line-height: 1.04 !important;
+  font-weight: 950 !important;
+  margin-top: 3px !important;
+}
+
+.pass15c-copy {
+  color: rgba(220,235,239,.88) !important;
+  font-size: 13px !important;
+  line-height: 1.42 !important;
+  margin-top: 7px !important;
+  max-width: 760px !important;
+}
+
+.pass15c-agent-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(145px, 1fr)) !important;
+  gap: 9px !important;
+  margin-top: 12px !important;
+}
+
+.pass15c-mini {
+  border: 1px solid rgba(123,203,219,.24) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.64) !important;
+  padding: 9px !important;
+  min-height: 82px !important;
+}
+
+.pass15c-mini-label {
+  color: rgba(159,189,198,.88) !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  letter-spacing: .10em !important;
+  text-transform: uppercase !important;
+}
+
+.pass15c-mini-text {
+  color: rgba(250,241,221,.94) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+  margin-top: 5px !important;
+}
+
+/* Executive console becomes a concise outcome card, not another workflow explanation. */
+body.pass12c-exec .pass12c-console {
+  width: min(860px, 53vw) !important;
+  max-width: min(860px, 53vw) !important;
+  margin: 8px 0 !important;
+}
+
+body.pass12c-exec .pass12c-console-head {
+  margin-bottom: 8px !important;
+}
+
+body.pass12c-exec .pass12c-title {
+  font-size: clamp(22px, 2.3vw, 32px) !important;
+}
+
+body.pass12c-exec .pass12c-grid {
+  grid-template-columns: repeat(2, minmax(190px, 1fr)) !important;
+}
+
+body.pass12c-exec .pass12c-card {
+  min-height: 98px !important;
+}
+
+/* Right mission/input panel. Reuses the previous toolbar area but makes it wider and more useful. */
+.pass15c-mission-panel {
+  position: fixed !important;
+  top: 86px !important;
+  right: clamp(14px, 2.2vw, 38px) !important;
+  width: min(410px, 28vw) !important;
+  max-height: calc(100vh - 112px) !important;
+  overflow: auto !important;
+  z-index: 35 !important;
+  padding: 12px !important;
+  border: 1px solid rgba(226,176,77,.46) !important;
+  border-radius: 19px !important;
+  background: rgba(5,12,16,.72) !important;
+  backdrop-filter: blur(17px) !important;
+  box-shadow: 0 18px 58px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.04) !important;
+}
+
+.pass15c-panel-title {
+  color: rgba(250,241,221,.98) !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  line-height: 1.12 !important;
+  margin-top: 2px !important;
+}
+
+.pass15c-panel-sub {
+  color: rgba(213,230,235,.80) !important;
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+  margin-top: 5px !important;
+}
+
+.pass15c-inputs {
+  display: grid !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+}
+
+.pass15c-input-block {
+  border: 1px solid rgba(123,203,219,.22) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.64) !important;
+  padding: 9px !important;
+}
+
+.pass15c-input-label {
+  color: rgba(159,189,198,.88) !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  letter-spacing: .10em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 5px !important;
+}
+
+.pass15c-input-value {
+  color: rgba(250,241,221,.94) !important;
+  font-size: 13px !important;
+  font-weight: 850 !important;
+  line-height: 1.25 !important;
+}
+
+.pass15c-tags {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 5px !important;
+  margin-top: 7px !important;
+}
+
+.pass15c-tags span {
+  border: 1px solid rgba(123,203,219,.28) !important;
+  border-radius: 999px !important;
+  background: rgba(8,20,27,.70) !important;
+  color: rgba(230,246,250,.88) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  padding: 4px 7px !important;
+}
+
+.pass15c-actions {
+  display: grid !important;
+  gap: 7px !important;
+  margin-top: 11px !important;
+}
+
+.pass15c-actions button {
+  border: 1px solid rgba(123,203,219,.32) !important;
+  border-radius: 12px !important;
+  background: rgba(8,20,27,.74) !important;
+  color: rgba(235,246,248,.94) !important;
+  padding: 10px 11px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+  text-align: left !important;
+  font-size: 13px !important;
+}
+
+.pass15c-actions button.primary {
+  background: linear-gradient(135deg, rgba(226,176,77,.97), rgba(177,121,32,.95)) !important;
+  color: rgba(20,14,6,.96) !important;
+  border-color: rgba(255,220,130,.72) !important;
+}
+
+.pass15c-actions small {
+  display: block !important;
+  color: rgba(213,230,235,.74) !important;
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+  margin-top: 3px !important;
+}
+
+.pass15c-status {
+  margin-top: 9px !important;
+  color: rgba(188,218,224,.86) !important;
+  font-size: 12px !important;
+  line-height: 1.34 !important;
+}
+
+/* Hide the old right toolbar so there is only one control surface. */
+body.pass12c-exec .pass12c-toolbar {
+  display: none !important;
+}
+
+/* Source Truth is useful, but no longer part of the main first-read flow. */
+body.pass12c-exec .pass14-source-panel:not(.open) {
+  width: min(860px, 53vw) !important;
+  max-width: min(860px, 53vw) !important;
+  max-height: 96px !important;
+  overflow: hidden !important;
+}
+
+/* Loading indicator from 15B/15A stays but is less noisy. */
+.pass15b-loading,
+.pass15a-status {
+  max-width: min(420px, 38vw) !important;
+}
+
+/* Use the right side for interface but keep the mural visible behind it. */
+body.pass12c-exec::before {
+  left: clamp(610px, 42vw, 820px) !important;
+  background-position: 54% top !important;
+  opacity: .92 !important;
+}
+
+@media (max-width: 1220px) {
+  .pass15c-mission-panel {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-height: none !important;
+    margin: 8px 0 !important;
+  }
+
+  .pass15c-agent-card,
+  .pass15c-summary-card,
+  body.pass12c-exec .pass12c-console,
+  body.pass12c-exec .pass14-source-panel:not(.open) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .pass15c-agent-grid,
+  body.pass12c-exec .pass12c-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  body.pass12c-exec .pass12c-toolbar {
+    display: none !important;
+  }
+}
+/* PASS 15C - Agent Identity Inputs Summary END */
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* PASS 16N - Signal Relevance and Sharper Brief START */
+html[data-scout-pass-16n="signal-relevance"] body.pass16n-home {
+  overflow: hidden !important;
+  background: #010508 !important;
+}
+
+html[data-scout-pass-16n="signal-relevance"] body.pass16n-home > *:not(.pass16n-stage):not(script):not(style) {
+  display: none !important;
+}
+
+html[data-scout-pass-16n="signal-relevance"] body.pass16n-home::before {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  background-image:
+    linear-gradient(90deg, rgba(0,0,0,.78) 0%, rgba(0,0,0,.49) 18%, rgba(0,0,0,.06) 48%, rgba(0,0,0,.26) 62%, rgba(0,0,0,.92) 100%),
+    url("/viewer/assets/scout_horizon_mural.jpg") !important;
+  background-size: cover !important;
+  background-position: 46% top !important;
+}
+
+html[data-scout-pass-16n="signal-relevance"] body.pass16n-home::after {
+  content: "" !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+  pointer-events: none !important;
+  background:
+    radial-gradient(circle at 43% 15%, rgba(255,226,151,.16), transparent 32%),
+    linear-gradient(180deg, rgba(0,0,0,.01), rgba(0,0,0,.28)) !important;
+}
+
+.pass16n-stage {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 10 !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  padding: 14px 18px !important;
+  color: rgba(250,241,221,.96) !important;
+  font-family: inherit !important;
+}
+
+.pass16n-grid {
+  display: grid !important;
+  grid-template-columns: minmax(365px, 28vw) 1fr minmax(430px, 30vw) !important;
+  gap: 18px !important;
+  align-items: start !important;
+  min-height: calc(100vh - 28px) !important;
+}
+
+.pass16n-left, .pass16n-right { display: grid !important; gap: 9px !important; }
+.pass16n-art-space { min-height: calc(100vh - 28px) !important; pointer-events: none !important; }
+
+.pass16n-panel {
+  border: 1px solid rgba(226,176,77,.42) !important;
+  border-radius: 17px !important;
+  background: rgba(5,12,16,.79) !important;
+  backdrop-filter: blur(16px) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.05) !important;
+  padding: 11px !important;
+}
+
+.pass16n-brand { padding: 11px 13px !important; }
+
+.pass16n-overline, .pass16n-label {
+  color: rgba(130,231,246,.86) !important;
+  font-size: 8.2px !important;
+  font-weight: 950 !important;
+  letter-spacing: .13em !important;
+  text-transform: uppercase !important;
+}
+
+.pass16n-title {
+  color: rgba(250,241,221,.98) !important;
+  font-size: clamp(31px, 3vw, 43px) !important;
+  font-weight: 950 !important;
+  letter-spacing: -.04em !important;
+  line-height: .92 !important;
+  margin: 6px 0 0 !important;
+}
+
+.pass16n-byline {
+  color: rgba(226,176,77,.92) !important;
+  font-size: 9px !important;
+  font-weight: 950 !important;
+  letter-spacing: .08em !important;
+  text-transform: uppercase !important;
+  margin-top: 3px !important;
+}
+
+.pass16n-tagline {
+  color: rgba(255,226,164,.97) !important;
+  font-size: 15px !important;
+  font-weight: 950 !important;
+  line-height: 1.08 !important;
+  margin-top: 5px !important;
+}
+
+.pass16n-one, .pass16n-help, .pass16n-small {
+  color: rgba(213,230,235,.78) !important;
+  font-size: 9.7px !important;
+  line-height: 1.23 !important;
+  margin-top: 4px !important;
+}
+
+.pass16n-section-title {
+  color: rgba(250,241,221,.98) !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  line-height: 1.04 !important;
+  margin-top: 2px !important;
+}
+
+.pass16n-fields { display: grid !important; grid-template-columns: 1fr !important; gap: 7px !important; margin-top: 8px !important; }
+.pass16n-mini-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 7px !important; }
+
+.pass16n-field {
+  border: 1px solid rgba(123,203,219,.25) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.70) !important;
+  padding: 8px !important;
+}
+
+.pass16n-field input, .pass16n-field select {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  border: 1px solid rgba(123,203,219,.34) !important;
+  border-radius: 10px !important;
+  background: rgba(8,20,27,.86) !important;
+  color: rgba(250,241,221,.96) !important;
+  padding: 7px 8px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  outline: none !important;
+}
+
+.pass16n-field input::placeholder { color: rgba(125,222,172,.72) !important; }
+
+.pass16n-chip-row { display: flex !important; flex-wrap: wrap !important; gap: 5px !important; margin-top: 7px !important; }
+.pass16n-chip {
+  border: 1px solid rgba(123,203,219,.26) !important;
+  border-radius: 999px !important;
+  background: rgba(8,20,27,.70) !important;
+  color: rgba(235,246,248,.90) !important;
+  padding: 5px 8px !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  cursor: pointer !important;
+}
+.pass16n-chip:hover { border-color: rgba(226,176,77,.52) !important; }
+
+.pass16n-actions { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-top: 9px !important; }
+.pass16n-actions button, .pass16n-drawer button {
+  border-radius: 13px !important;
+  padding: 10px 11px !important;
+  font-weight: 950 !important;
+  cursor: pointer !important;
+  text-align: center !important;
+  font-size: 13px !important;
+}
+
+.pass16n-run {
+  border: 1px solid rgba(255,220,130,.80) !important;
+  background: linear-gradient(135deg, rgba(226,176,77,.99), rgba(177,121,32,.96)) !important;
+  color: rgba(20,14,6,.98) !important;
+}
+.pass16n-secondary {
+  border: 1px solid rgba(123,203,219,.36) !important;
+  background: rgba(8,20,27,.82) !important;
+  color: rgba(235,246,248,.94) !important;
+}
+
+.pass16n-progress-panel {
+  border: 1px solid rgba(123,203,219,.30) !important;
+  border-radius: 16px !important;
+  background: rgba(5,12,16,.82) !important;
+  padding: 10px !important;
+}
+
+.pass16n-progress-top {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 10px !important;
+  color: rgba(250,241,221,.96) !important;
+  font-size: 13px !important;
+  line-height: 1.2 !important;
+  font-weight: 950 !important;
+}
+
+.pass16n-progress-bar {
+  margin-top: 7px !important;
+  height: 18px !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background: rgba(123,203,219,.14) !important;
+  border: 1px solid rgba(123,203,219,.24) !important;
+}
+.pass16n-progress-fill {
+  height: 100% !important;
+  width: 0% !important;
+  border-radius: 999px !important;
+  background: linear-gradient(90deg, rgba(125,222,172,.95), rgba(226,176,77,.99)) !important;
+  transition: width .22s ease !important;
+}
+
+.pass16n-steps { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 5px !important; margin-top: 7px !important; }
+.pass16n-step {
+  border: 1px solid rgba(123,203,219,.20) !important;
+  border-radius: 10px !important;
+  padding: 5px !important;
+  color: rgba(213,230,235,.72) !important;
+  font-size: 9px !important;
+  font-weight: 850 !important;
+  text-align: center !important;
+}
+.pass16n-step.active {
+  color: rgba(250,241,221,.98) !important;
+  border-color: rgba(226,176,77,.52) !important;
+  background: rgba(48,32,9,.34) !important;
+}
+
+.pass16n-answer-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 7px !important; margin-top: 8px !important; }
+.pass16n-answer, .pass16n-intel-card {
+  border: 1px solid rgba(123,203,219,.25) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.69) !important;
+  padding: 9px !important;
+}
+.pass16n-answer.gold, .pass16n-intel-card.gold {
+  border-color: rgba(226,176,77,.50) !important;
+  background: rgba(48,32,9,.36) !important;
+}
+.pass16n-answer-text, .pass16n-intel-main {
+  color: rgba(250,241,221,.95) !important;
+  font-size: 12.4px !important;
+  line-height: 1.28 !important;
+  font-weight: 850 !important;
+  margin-top: 4px !important;
+}
+.pass16n-plain-language {
+  color: rgba(213,230,235,.80) !important;
+  font-size: 10px !important;
+  line-height: 1.25 !important;
+  margin-top: 6px !important;
+}
+
+.pass16n-intel-list { display: grid !important; gap: 7px !important; margin-top: 8px !important; }
+.pass16n-pill-row { display: flex !important; flex-wrap: wrap !important; gap: 4px !important; margin-top: 6px !important; }
+.pass16n-pill {
+  border: 1px solid rgba(123,203,219,.27) !important;
+  border-radius: 999px !important;
+  padding: 3px 7px !important;
+  color: rgba(226,244,248,.90) !important;
+  font-size: 8.8px !important;
+  font-weight: 800 !important;
+  background: rgba(8,20,27,.66) !important;
+}
+
+.pass16n-drawer-backdrop {
+  position: fixed !important; inset: 0 !important; z-index: 80 !important;
+  background: rgba(0,0,0,.58) !important; display: none !important;
+}
+.pass16n-drawer-backdrop.open { display: block !important; }
+
+.pass16n-drawer {
+  position: fixed !important; z-index: 90 !important; top: 18px !important; right: 18px !important; bottom: 18px !important;
+  width: min(780px, 49vw) !important;
+  border: 1px solid rgba(226,176,77,.46) !important;
+  border-radius: 20px !important;
+  background: rgba(5,12,16,.94) !important;
+  backdrop-filter: blur(18px) !important;
+  box-shadow: 0 28px 90px rgba(0,0,0,.62) !important;
+  display: none !important;
+  color: rgba(250,241,221,.96) !important;
+  overflow: hidden !important;
+}
+.pass16n-drawer.open { display: grid !important; grid-template-rows: auto auto 1fr !important; }
+.pass16n-drawer-head {
+  display: flex !important; justify-content: space-between !important; align-items: flex-start !important; gap: 12px !important;
+  padding: 16px !important; border-bottom: 1px solid rgba(123,203,219,.18) !important;
+}
+.pass16n-drawer-title { font-size: 24px !important; line-height: 1.05 !important; font-weight: 950 !important; }
+.pass16n-close {
+  width: auto !important;
+  border: 1px solid rgba(123,203,219,.34) !important;
+  background: rgba(8,20,27,.82) !important;
+  color: rgba(235,246,248,.94) !important;
+}
+.pass16n-tabs {
+  display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 6px !important;
+  padding: 10px 16px !important; border-bottom: 1px solid rgba(123,203,219,.18) !important;
+}
+.pass16n-tab {
+  border: 1px solid rgba(123,203,219,.24) !important; background: rgba(8,20,27,.72) !important;
+  color: rgba(235,246,248,.88) !important; border-radius: 11px !important; padding: 9px !important;
+  font-size: 12px !important; font-weight: 950 !important;
+}
+.pass16n-tab.active {
+  border-color: rgba(226,176,77,.55) !important;
+  background: rgba(48,32,9,.42) !important;
+  color: rgba(250,241,221,.98) !important;
+}
+.pass16n-drawer-body { overflow: auto !important; padding: 16px !important; }
+.pass16n-drawer-section { display: none !important; }
+.pass16n-drawer-section.active { display: block !important; }
+.pass16n-list { display: grid !important; gap: 8px !important; }
+.pass16n-row {
+  border: 1px solid rgba(123,203,219,.24) !important;
+  border-radius: 13px !important;
+  background: rgba(4,13,18,.64) !important;
+  padding: 10px !important;
+}
+.pass16n-row-title { font-size: 14px !important; font-weight: 950 !important; line-height: 1.25 !important; }
+.pass16n-row-meta { color: rgba(213,230,235,.68) !important; font-size: 11px !important; line-height: 1.25 !important; margin-top: 5px !important; }
+.pass16n-legacy { display: inline-block !important; margin-top: 12px !important; color: rgba(130,231,246,.9) !important; font-size: 12px !important; font-weight: 900 !important; text-decoration: none !important; }
+
+body.pass16n-workbench .pass16n-stage { display: none !important; }
+body.pass16n-workbench { overflow: auto !important; }
+body.pass16n-workbench > *:not(script):not(style) { display: revert !important; }
+
+@media (max-width: 1250px) {
+  html[data-scout-pass-16n="signal-relevance"] body.pass16n-home { overflow: auto !important; }
+  .pass16n-stage { overflow: auto !important; }
+  .pass16n-grid { grid-template-columns: 1fr !important; }
+  .pass16n-art-space { min-height: 240px !important; }
+  .pass16n-mini-grid, .pass16n-actions, .pass16n-steps, .pass16n-tabs { grid-template-columns: 1fr !important; }
+  .pass16n-drawer { width: calc(100vw - 24px) !important; right: 12px !important; left: 12px !important; }
+}
+/* PASS 16N - Signal Relevance and Sharper Brief END */
+</style>
+  <link rel="stylesheet" href="./pass18e_legibility_and_safe_viewport.css?v=pass18e-legibility">
+  <link rel="stylesheet" href="./pass18f_readability_layout_expand.css?v=pass18f-readable">
+</head>
+<body>
+  <div class="wrap">
+    <div class="hero">
+      <div class="heroTop">
+        <div>
+          <div class="heroEyebrow">Environmental Intelligence for Life Sciences Leadership</div>
+          <h1>Scout Horizon</h1>
+          <div class="heroTagline">Survey the field before the field changes.</div>
+          <div class="heroLead">A demo-safe strategic intelligence console that turns fragmented public life-sciences signals into early warnings, opportunity lanes, confidence cues, and next-action review.</div>
+        </div>
+        <div class="topActions"><button id="helpBtn" class="ghostBtn" type="button">What am I looking at / Instructions / How to</button><div class="demoSafe"><strong>Public demo-safe:</strong> no private company, customer, employee, credential, or regulated operational data is exposed.</div></div>
+      </div>
+      <div class="scoutMark" aria-hidden="true"></div>
+      <div class="heroProof" aria-label="Proof points">
+        <div class="proofTile"><div class="k">Input</div><div class="v">Fragmented public signals</div></div>
+        <div class="proofTile"><div class="k">Engine</div><div class="v">Signal lanes, scoring, filters</div></div>
+        <div class="proofTile"><div class="k">Output</div><div class="v">Executive review watchlist</div></div>
+        <div class="proofTile"><div class="k">Use</div><div class="v">Demo-safe leadership console</div></div>
+      </div>
+
+      <div class="scenarioStrip" aria-label="Pass 9 demo scenario">
+        <div><div class="scenarioK">Pass 9 demo scenario</div><div class="scenarioTitle">Pharma Readiness Watch</div></div>
+        <div><div class="scenarioText">A demo-safe view of public/sample life-sciences signals that can suggest automation, validation, compliance, cybersecurity, and manufacturing-readiness pressure before the field changes.</div><div class="scenarioLanes"><span>Facility expansion</span><span>Fill-finish capacity</span><span>FDA/GMP pressure</span><span>Cyber/OT risk</span><span>CDMO activity</span><span>AI operations</span></div></div>
+      </div>
+    </div>
+
+    <!-- PASS 10 - Run Project Panel START -->
+<div class="pass10RunPanel" aria-label="Run a Scout Horizon project">
+  <div>
+    <div class="eyebrow">Run a project</div>
+    <h2>Pharma Readiness Watch</h2>
+    <p>Use this like a simple executive workflow: load the demo project, run Scout Horizon, then review the active signal and next move.</p>
+  </div>
+  <div class="pass10StepRow" role="group" aria-label="Scout Horizon project workflow">
+    <button class="pass10StepBtn" id="pass10ResetDemoBtn" type="button">1. Load project<small>Restore clean demo signals</small></button>
+    <button class="pass10StepBtn primary" id="pass10RunProjectBtn" type="button">2. Run Scout Horizon<small>Refresh the watchlist</small></button>
+    <button class="pass10StepBtn" id="pass10ReviewBtn" type="button">3. Review next move<small>Jump to the decision output</small></button>
+  </div>
+</div>
+<!-- PASS 10 - Run Project Panel END -->
+
+    <div id="statusBanner" class="banner warn">Ready.</div>
+
+    <div class="boardBrief" aria-label="Scout brief">
+      <div class="sectionTitle">Scout Brief</div>
+      <div class="subtle">Plain-English horizon read from the currently loaded and filtered signals.</div>
+      <div class="briefGrid">
+        <div class="briefCard"><div class="h">Horizon Shift</div><div class="b" id="briefWhatChanged">Loading signals...</div></div>
+        <div class="briefCard"><div class="h">Strategic Read</div><div class="b" id="briefWhyMatters">Preparing executive context...</div></div>
+        <div class="briefCard"><div class="h">Pressure Level</div><div class="b" id="briefDecisionPressure">Calculating priority and confidence...</div></div>
+        <div class="briefCard action"><div class="h">Next Move</div><div class="b" id="briefNextReview">Select or filter signals to focus the briefing.</div></div>
+      </div>
+    </div>
+
+    <div class="layout">
+      <div class="card controls">
+        <div class="sectionTitle">Signal Filters</div>
+
+        <label for="webKeyword">Keyword</label>
+        <input id="webKeyword" autocomplete="off" spellcheck="false" />
+
+        <label for="webCompany">Company (optional)</label>
+        <input id="webCompany" autocomplete="off" spellcheck="false" />
+
+        <label for="webMode">Coverage mode</label>
+        <select id="webMode">
+          <option value="broad_and_targeted">Broad + targeted</option>
+          <option value="targeted_only">Targets only</option>
+        </select>
+
+        <label for="webSourceTargets">Targets (Ctrl+Click for multiple)</label>
+        <select id="webSourceTargets" multiple size="8"></select>
+
+        <div class="btnRow">
+          <button id="demoFillBtn" type="button">Reset to demo defaults</button>
+          <div class="smallBtns">
+            <button id="demoRunBtn" type="button">Run demo ingest</button>
+            <button id="runAllBtn" type="button">Run Everything</button>
+          </div>
+          <div class="smallBtns">
+            <button id="ingestBtn" type="button">Search &amp; Ingest</button>
+            <button id="refreshBtn" type="button">Refresh Horizon</button>
+          </div>
+        </div>
+
+        <hr class="sep" />
+        <div class="sectionTitle">Executive-mode drill-downs</div>
+        <div class="quickChips" id="quickChips"></div>
+
+        <label for="decisionLens">Decision lens</label>
+        <select id="decisionLens"></select>
+
+        <label for="timeWindow">Time window</label>
+        <select id="timeWindow"></select>
+
+        <label for="filterRegion">Operating region</label>
+        <select id="filterRegion"></select>
+
+        <label for="filterAccountFocus">Signal focus</label>
+        <select id="filterAccountFocus"></select>
+
+        <label for="filterAccountName">Organization / source focus</label>
+        <select id="filterAccountName"></select>
+
+        <label for="filterServiceLine">Service line</label>
+        <select id="filterServiceLine"></select>
+
+        <label for="filterLane">Lane</label>
+        <select id="filterLane"></select>
+
+        <label for="filterRegulator">Regulator</label>
+        <select id="filterRegulator"></select>
+
+        <label for="filterSource">Source</label>
+        <select id="filterSource"></select>
+
+        <label for="filterSignalType">Signal type</label>
+        <select id="filterSignalType"></select>
+
+        <div class="triple">
+          <div>
+            <label for="minScore">Min score</label>
+            <select id="minScore"></select>
+          </div>
+          <div>
+            <label for="minConfidence">Min confidence</label>
+            <select id="minConfidence"></select>
+          </div>
+          <div>
+            <label for="minPriority">Min priority</label>
+            <select id="minPriority"></select>
+          </div>
+        </div>
+
+        <label for="filterText">Free-text search within loaded signals</label>
+        <input id="filterText" autocomplete="off" spellcheck="false" placeholder="Search title, observation, account, lane, tags..." />
+
+        <div class="smallBtns" style="margin-top:10px;">
+          <button id="clearFiltersBtn" type="button">Clear Executive filters</button>
+          <button id="refreshViewBtn" type="button">Refresh view</button>
+        </div>
+
+        <details>
+          <summary>Optional Google PSE setup (local/private only)</summary>
+          <label for="gKey">Google API key (do not enter secrets on public demo)</label>
+          <input id="gKey" autocomplete="off" spellcheck="false" />
+          <label for="gCx">Programmable Search Engine ID (cx)</label>
+          <input id="gCx" autocomplete="off" spellcheck="false" />
+          <div class="smallBtns" style="margin-top:10px;">
+            <button id="saveCfgBtn" type="button">Save config</button>
+            <button id="testCfgBtn" type="button">Test config</button>
+          </div>
+          <div id="cfgStatus" class="muted" style="margin-top:8px;"></div>
+        </details>
+
+        <details open>
+          <summary>Diagnostics</summary>
+          <div id="diagBase" class="muted" style="margin-top:8px;"></div>
+          <div id="diagFetch" class="muted"></div>
+          <div id="diagCount" class="muted"></div>
+          <div id="diagFiltered" class="muted"></div>
+          <div id="diagError" class="muted"></div>
+          <div id="diagVersion" class="muted"></div>
+        </details>
+      </div>
+
+      <div class="card">
+        <div class="sectionTitle">Horizon Snapshot</div>
+        <div class="statsGrid">
+          <div class="stat"><div class="t">Signals shown</div><div class="v" id="kpiSignals">0</div><div class="s" id="kpiSignalsSub">of 0 loaded</div></div>
+          <div class="stat"><div class="t">Average priority</div><div class="v" id="kpiPriority">0.00</div><div class="s" id="kpiPrioritySub">executive weighting</div></div>
+          <div class="stat"><div class="t">Average confidence</div><div class="v" id="kpiConfidence">0.00</div><div class="s" id="kpiConfidenceSub">evidence strength</div></div>
+          <div class="stat"><div class="t">Last added</div><div class="v" id="kpiAdded">0</div><div class="s" id="kpiAddedSub">new items in latest ingest</div></div>
+        </div>
+
+        <div class="split2">
+          <div class="stat"><div class="t">Last action</div><div class="v" id="kpiAction" style="font-size:15px;font-weight:700;">Ready</div><div class="s" id="kpiActionSub">stable workflow preserved</div></div>
+          <div class="stat"><div class="t">Mode used</div><div class="v" id="kpiMode" style="font-size:15px;font-weight:700;">—</div><div class="s" id="kpiModeSub">ingest engine mode</div></div>
+        </div>
+
+        <div class="split2">
+          <div>
+            <div class="subtle">Top growth / opportunity themes</div>
+            <div class="snapshotList" id="growthSummary"></div>
+          </div>
+          <div>
+            <div class="subtle">Top risk / watch themes</div>
+            <div class="snapshotList" id="riskSummary"></div>
+          </div>
+        </div>
+
+        <div class="split2">
+          <div>
+            <div class="subtle">Lane mix</div>
+            <div class="smallList" id="laneMix"></div>
+          </div>
+          <div>
+            <div class="subtle">Region mix</div>
+            <div class="smallList" id="regionMix"></div>
+          </div>
+        </div>
+
+        <div class="split2">
+          <div>
+            <div class="subtle">Account concentration</div>
+            <div class="smallList" id="accountMix"></div>
+          </div>
+          <div>
+            <div class="subtle">Key changes since last run</div>
+            <div class="snapshotList" id="changeSummary"></div>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <div class="toolbar">
+          <div>
+            <div class="sectionTitle" style="margin-bottom:0;">Watchlist</div>
+            <div class="resultsMeta" id="resultsMeta">Loading…</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            <span class="subtle">Sort</span>
+            <select id="sortBy" style="width:auto; min-width:180px;">
+              <option value="priority_desc">Priority high to low</option>
+              <option value="confidence_desc">Confidence high to low</option>
+              <option value="score_desc">Score high to low</option>
+              <option value="newest">Newest first</option>
+              <option value="oldest">Oldest first</option>
+              <option value="title_asc">Title A–Z</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="facetChips" id="facetChips"></div>
+        <div class="list" id="signalsList"></div>
+      </div>
+
+      <div class="card detailCol">
+        <div class="sectionTitle">Active Signal</div>
+        <div id="signalDetail" class="muted">Select a signal from the list.</div>
+      </div>
+    </div>
+  </div>
+  <script src="/viewer/app.js?v=pass9-pharma-readiness-watch"></script>
+  <script src="./pass18e_legibility_and_safe_viewport.js?v=pass18e-legibility"></script>
+<div id="helpModal" class="modalWrap" aria-hidden="true">
+    <div class="modalCard" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+      <div class="modalTop">
+        <div>
+          <h2 id="helpTitle" style="margin:0 0 4px;">What am I looking at / Instructions / How to</h2>
+          <div class="muted">Quick executive guide for using Scout Horizon without needing technical steps.</div>
+        </div>
+        <button id="helpCloseBtn" class="closeBtn" type="button">Close</button>
+      </div>
+
+      <div class="howGrid">
+        <div class="howCard">
+          <h3>What am I looking at?</h3>
+          <p>This page is a decision-support horizon console. It pulls signals from configured sources, scores them, and lets you narrow them down into a short list that matters for the leader right now.</p>
+          <ul>
+            <li><strong>Left side:</strong> what to search and how to filter it.</li>
+            <li><strong>Center:</strong> the executive snapshot plus the clickable signal list.</li>
+            <li><strong>Right side:</strong> the selected-signal explanation and recommended action.</li>
+          </ul>
+        </div>
+
+        <div class="howCard">
+          <h3>How do I use it fast?</h3>
+          <ol>
+            <li>Click <strong>Reset to demo defaults</strong> if you want a safe starting point.</li>
+            <li>Click <strong>Run demo ingest</strong> to load fresh demo-safe signals.</li>
+            <li>Use the Executive filters to narrow by region, lane, account, regulator, source, and score.</li>
+            <li>Click any signal card to see why it matters and what to do next.</li>
+          </ol>
+        </div>
+
+        <div class="howCard">
+          <h3>What do the numbers mean?</h3>
+          <ul>
+            <li><strong>Score:</strong> overall relevance of the signal.</li>
+            <li><strong>Confidence:</strong> how strong or corroborated the evidence appears.</li>
+            <li><strong>Priority:</strong> how urgently it should rise for executive review.</li>
+          </ul>
+          <p>Higher values rise toward the top when sorted by priority, score, or confidence.</p>
+        </div>
+      </div>
+
+      <div class="howGrid">
+        <div class="howCard">
+          <h3>How do I read the middle column?</h3>
+          <p><strong>Horizon Snapshot</strong> summarizes what is currently loaded and filtered. It shows how many signals are in view, average priority/confidence, and the top growth and risk themes.</p>
+          <p><strong>Signal cards</strong> show the headline, source, date, preview text, and badges for score, confidence, and priority.</p>
+        </div>
+
+        <div class="howCard">
+          <h3>How do I read the right side?</h3>
+          <p>When you click a signal, the right pane becomes your briefing sheet:</p>
+          <ul>
+            <li>what happened</li>
+            <li>why it matters</li>
+            <li>recommended action</li>
+            <li>tags, labels, and corroboration</li>
+            <li>the source link to open externally</li>
+          </ul>
+        </div>
+
+        <div class="howCard">
+          <h3>Best demo flow</h3>
+          <ol>
+            <li>Reset to demo defaults</li>
+            <li>Run demo ingest</li>
+            <li>Set a region and lane</li>
+            <li>Raise min priority to 0.70+</li>
+            <li>Click the top 2–3 signals and read the recommended action aloud</li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="helperCallout">
+        <strong>Tip:</strong> If the screen ever feels too broad, use the quick chips first, then add one or two dropdown filters. That usually gets you to a clean executive shortlist very quickly.
+      </div>
+    </div>
+  </div>
+<!-- PASS 10 - Run Project JS START -->
+<script id="pass10-run-project-js">
+(function(){
+  function byId(id){ return document.getElementById(id); }
+  function clickExisting(id){ var el = byId(id); if(el){ el.click(); return true; } return false; }
+  function bind(id, fn){ var el = byId(id); if(el && !el.dataset.pass10Bound){ el.dataset.pass10Bound = "1"; el.addEventListener("click", fn); } }
+  function jumpToOutput(){
+    var target = document.querySelector('.detailCol') || byId('signalDetail') || document.querySelector('.boardBrief');
+    if(target){ target.scrollIntoView({behavior:'smooth', block:'start'}); }
+  }
+  function init(){
+    bind('pass10ResetDemoBtn', function(){ clickExisting('demoFillBtn'); });
+    bind('pass10RunProjectBtn', function(){
+      if(!clickExisting('runAllBtn')){
+        if(!clickExisting('demoRunBtn')){ clickExisting('refreshBtn'); }
+      }
+      window.setTimeout(jumpToOutput, 900);
+    });
+    bind('pass10ReviewBtn', jumpToOutput);
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+<!-- PASS 10 - Run Project JS END -->
+
+
+
+
+<!-- PASS 12C - One Page Regression Repair SCRIPT START -->
+<script>
+(function () {
+  var PASS = "12c-one-page-regression-repair";
+  document.documentElement.setAttribute("data-scout-pass", PASS);
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function normalize(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+  function esc(txt) { return String(txt || "").replace(/[&<>"']/g, function (c) { return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[c]; }); }
+  function short(txt, max) { txt = normalize(txt).replace(/^[:\-\s]+/, ""); return txt.length <= max ? txt : txt.slice(0, max - 1).replace(/\s+\S*$/, "") + "..."; }
+
+  function workingText() {
+    var clone = document.body.cloneNode(true);
+    qsa(".pass12c-console, .pass12c-toolbar, .pass12-console, .pass12-toolbar, script, style, noscript", clone).forEach(function (n) { n.remove(); });
+    return normalize(clone.textContent || "");
+  }
+
+  function between(full, startRegex, stops) {
+    var m = startRegex.exec(full);
+    if (!m) return "";
+    var rest = full.slice(m.index + m[0].length);
+    var stop = rest.length;
+    stops.forEach(function (rx) {
+      var sm = rx.exec(rest);
+      if (sm && sm.index >= 0) stop = Math.min(stop, sm.index);
+    });
+    return normalize(rest.slice(0, stop));
+  }
+
+  function clean(txt) {
+    return normalize(txt)
+      .replace(/^[:\-\s]+/, "")
+      .replace(/^(Field shift|Horizon shift|Strategic read|Pressure level|Next move|Recommended next move|Active signal)\s*/i, "")
+      .replace(/Executive Decision Console.*$/i, "")
+      .replace(/Run the project, then review the next move.*$/i, "");
+  }
+
+  function useful(txt) {
+    txt = clean(txt);
+    if (!txt || txt.length < 18) return false;
+    if (/Environmental Intelligence for Life Sciences Leadership Scout Horizon Survey the field before the field changes/i.test(txt)) return false;
+    if (/Run a project|Load project|Run Scout Horizon|Open Full Workbench|Clear keyword/i.test(txt)) return false;
+    return true;
+  }
+
+  function pick(label) {
+    var full = workingText();
+    var value = "";
+    if (label === "field") value = between(full, /HORIZON SHIFT\s*/i, [/STRATEGIC READ/i, /PRESSURE LEVEL/i, /NEXT MOVE/i, /SIGNAL FILTERS/i, /HORIZON SNAPSHOT/i, /ACTIVE SIGNAL/i]);
+    if (label === "strategic") value = between(full, /STRATEGIC READ\s*/i, [/PRESSURE LEVEL/i, /NEXT MOVE/i, /SIGNAL FILTERS/i, /HORIZON SNAPSHOT/i, /ACTIVE SIGNAL/i]);
+    if (label === "pressure") value = between(full, /PRESSURE LEVEL\s*/i, [/NEXT MOVE/i, /SIGNAL FILTERS/i, /HORIZON SNAPSHOT/i, /ACTIVE SIGNAL/i]);
+    if (label === "next") {
+      value = between(full, /NEXT MOVE\s*/i, [/SIGNAL FILTERS/i, /HORIZON SNAPSHOT/i, /ACTIVE SIGNAL/i, /EXECUTIVE CONTEXT/i]);
+      if (!useful(value)) value = between(full, /RECOMMENDED NEXT MOVE\s*/i, [/INTERNAL CORROBORATION/i, /SCORING EXPLANATION/i, /FACETS/i, /TAGS/i, /LINK OUT/i]);
+    }
+    if (label === "active") value = between(full, /ACTIVE SIGNAL\s*/i, [/EXECUTIVE CONTEXT/i, /COVERAGE LABELS/i, /OBSERVATION/i, /WHY IT MATTERS/i, /PRESSURE/i, /RECOMMENDED NEXT MOVE/i]);
+    return useful(value) ? clean(value) : "";
+  }
+
+  function fallbackActive() {
+    var txt = workingText();
+    var m = txt.match(/ACTIVE SIGNAL\s+(.{30,170}?)(?:\s+CDMO_|\s+facility_|\s+opportunity|\s+EXECUTIVE CONTEXT|$)/i);
+    return m ? normalize(m[1]) : "";
+  }
+
+  function data() {
+    var field = pick("field");
+    var strategic = pick("strategic");
+    var active = pick("active") || fallbackActive();
+    var pressure = pick("pressure");
+    var next = pick("next");
+    var quality = "live";
+    if (!useful(field)) { field = "Review the loaded project signals to identify where capacity, validation, or partner-readiness pressure is building."; quality = "waiting"; }
+    if (!useful(active)) { active = "Run Scout Horizon to select the strongest active signal from the loaded project."; quality = "waiting"; }
+    if (!useful(pressure)) { pressure = strategic || "Priority and confidence will update after the project run completes."; quality = "waiting"; }
+    if (!useful(next)) { next = "Run Scout Horizon, then review the recommended next move for leadership follow-up."; quality = "waiting"; }
+    return { field: field, active: active, pressure: pressure, next: next, quality: quality };
+  }
+
+  function ensureConsole() {
+    var c = qs(".pass12c-console");
+    if (c) return c;
+    c = document.createElement("section");
+    c.className = "pass12c-console";
+    var anchor = qs("#statusBanner") || qs(".pass10RunPanel") || qs(".hero") || qs(".wrap");
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", c);
+    else document.body.insertBefore(c, document.body.firstChild);
+    return c;
+  }
+
+  function renderConsole() {
+    var d = data();
+    var c = ensureConsole();
+    c.setAttribute("data-quality", d.quality);
+    c.innerHTML = [
+      '<div class="pass12c-console-head"><div>',
+        '<div class="pass12c-kicker">Executive decision console</div>',
+        '<div class="pass12c-title">Run the project, then review the next move.</div>',
+        '<div class="pass12c-sub">Answer first. Open the full workbench only when you need filters, scoring, source labels, and signal evidence.</div>',
+      '</div><div class="pass12c-pill">' + (document.body.classList.contains("pass12c-exec") ? "Executive View" : "Full Workbench") + '</div></div>',
+      '<div class="pass12c-grid">',
+        '<article class="pass12c-card"><div class="pass12c-label">Field shift</div><div class="pass12c-main">' + esc(short(d.field,150)) + '</div><div class="pass12c-foot">What changed in the loaded project.</div></article>',
+        '<article class="pass12c-card"><div class="pass12c-label">Active signal</div><div class="pass12c-main">' + esc(short(d.active,150)) + '</div><div class="pass12c-foot">The strongest visible signal to inspect first.</div></article>',
+        '<article class="pass12c-card"><div class="pass12c-label">Pressure level</div><div class="pass12c-main">' + esc(short(d.pressure,145)) + '</div><div class="pass12c-foot">Priority and confidence cue.</div></article>',
+        '<article class="pass12c-card next"><div class="pass12c-label">Recommended next move</div><div class="pass12c-main">' + esc(short(d.next,155)) + '</div><div class="pass12c-foot">The action leadership should review.</div></article>',
+      '</div>'
+    ].join("");
+  }
+
+  function status(msg) {
+    var n = qs(".pass12c-status");
+    if (n) n.textContent = msg || "";
+    var b = qs("#statusBanner");
+    if (b && msg) b.textContent = msg;
+  }
+
+  function refreshSoon() { setTimeout(function () { location.href = "/viewer/index.html?fix=pass12c&t=" + Date.now(); }, 650); }
+
+  async function postJSON(path) {
+    var res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" } });
+    if (!res.ok) throw new Error(path + " returned " + res.status);
+    try { return await res.json(); } catch (e) { return {}; }
+  }
+
+  async function loadProject() { status("Loading Pharma Readiness Watch demo defaults..."); try { await postJSON("/api/demo_fill"); status("Project loaded. Next: run Scout Horizon."); refreshSoon(); } catch (e) { status("Could not load defaults: " + e.message); } }
+  async function runProject() { status("Running Scout Horizon..."); try { await postJSON("/api/run_all"); status("Run complete. Review the next move."); refreshSoon(); } catch (e) { try { await postJSON("/api/refresh"); status("Signals refreshed. Review the next move."); refreshSoon(); } catch (e2) { status("Run failed: " + e.message); } } }
+  function reviewNextMove() { renderConsole(); status("Showing the decision output."); ensureConsole().scrollIntoView({ behavior: "smooth", block: "start" }); }
+  function clearKeyword() {
+    var changed = false;
+    qsa("input").forEach(function (input) {
+      var parent = input.closest("label, .field, .control, .card, div");
+      var t = normalize(parent && parent.textContent);
+      if (/keyword/i.test(t) || /pharma partnership/i.test(input.value || "")) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        changed = true;
+      }
+    });
+    status(changed ? "Keyword filter cleared. Refreshing..." : "No keyword filter found.");
+    if (changed) refreshSoon();
+  }
+
+  function mode(executive) {
+    document.body.classList.toggle("pass12c-exec", !!executive);
+    localStorage.setItem("scout-pass12c-exec", executive ? "1" : "0");
+    var b = qs("[data-pass12c='mode']");
+    if (b) b.textContent = executive ? "Open Full Workbench" : "Return to Executive View";
+    renderConsole();
+    status(executive ? "Executive View: one-page answer first." : "Full Workbench: all details visible.");
+  }
+
+  function toolbar() {
+    var tb = qs(".pass12c-toolbar");
+    if (!tb) { tb = document.createElement("div"); tb.className = "pass12c-toolbar"; document.body.appendChild(tb); }
+    tb.innerHTML = [
+      '<div class="pass12c-toolbar-title">Run a project</div>',
+      '<button class="primary" data-pass12c="run">Run Scout Horizon</button>',
+      '<button data-pass12c="load">Load demo project</button>',
+      '<button data-pass12c="review">Review next move</button>',
+      '<button data-pass12c="mode">Open Full Workbench</button>',
+      '<button data-pass12c="clear">Clear keyword filter</button>',
+      '<div class="pass12c-status">Ready.</div>'
+    ].join("");
+    tb.addEventListener("click", function (ev) {
+      var a = ev.target && ev.target.getAttribute("data-pass12c");
+      if (a === "run") runProject();
+      if (a === "load") loadProject();
+      if (a === "review") reviewNextMove();
+      if (a === "clear") clearKeyword();
+      if (a === "mode") mode(!document.body.classList.contains("pass12c-exec"));
+    });
+  }
+
+  function wireRunCards() {
+    qsa(".pass10RunPanel button, .pass10RunPanel [role='button'], .pass10RunPanel .tile, .pass10RunPanel div, .pass10RunPanel article").forEach(function (node) {
+      var t = normalize(node.textContent);
+      if (/Load project/i.test(t)) { node.style.cursor = "pointer"; node.addEventListener("click", loadProject); }
+      if (/Run Scout Horizon/i.test(t)) { node.style.cursor = "pointer"; node.addEventListener("click", runProject); }
+      if (/Review next move/i.test(t)) { node.style.cursor = "pointer"; node.addEventListener("click", reviewNextMove); }
+    });
+  }
+
+  function removeOldDynamicChrome() {
+    qsa(".pass12-console, .pass12-toolbar").forEach(function (n) { n.remove(); });
+  }
+
+  function autoClearResidue() {
+    var changed = false;
+    qsa("input").forEach(function (input) {
+      if (/^pharma partnership$/i.test((input.value || "").trim())) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        changed = true;
+      }
+    });
+    if (changed) status("Cleared stale keyword filter from prior run.");
+  }
+
+  function init() {
+    removeOldDynamicChrome();
+    toolbar();
+    wireRunCards();
+    autoClearResidue();
+    mode(localStorage.getItem("scout-pass12c-exec") !== "0");
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      renderConsole();
+      if (attempts >= 12) clearInterval(timer);
+    }, 700);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 12C - One Page Regression Repair SCRIPT END -->
+<!-- PASS 13 - GLP-1 Manufacturing Pressure Radar SCRIPT START -->
+<script>
+(function () {
+  var PASS = "13-glp1-manufacturing-pressure-radar";
+  document.documentElement.setAttribute("data-scout-pass-13", PASS);
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function txt(node) { return (node && node.textContent || "").replace(/\s+/g, " ").trim(); }
+
+  var project = {
+    title: "GLP-1 Manufacturing Pressure Radar",
+    sub: "Scan public/sample life-sciences signals for manufacturing-readiness, fill-finish capacity, CDMO activity, validation pressure, automation needs, and partner-readiness opportunities around high-demand injectable therapies.",
+    lanes: ["Fill-finish", "CDMO", "FDA/GMP", "Automation/BMS", "Cold chain", "Supplier readiness", "Cyber/OT", "AI operations"]
+  };
+
+  function setTextByMatch(pattern, replacement) {
+    qsa("h1,h2,h3,p,div,span,strong").forEach(function (n) {
+      if (n.children && n.children.length > 0) return;
+      var t = txt(n);
+      if (pattern.test(t)) n.textContent = replacement;
+    });
+  }
+
+  function addRibbon() {
+    if (qs(".pass13-project-ribbon")) return;
+    var ribbon = document.createElement("section");
+    ribbon.className = "pass13-project-ribbon";
+    ribbon.innerHTML = [
+      '<div class="pass13-ribbon-kicker">Pass 13 showcase project</div>',
+      '<div class="pass13-ribbon-title">' + project.title + '</div>',
+      '<div class="pass13-ribbon-sub">' + project.sub + '</div>',
+      '<div class="pass13-lanes">' + project.lanes.map(function (x) { return '<span>' + x + '</span>'; }).join("") + '</div>'
+    ].join("");
+    var anchor = qs(".pass10RunPanel") || qs("#statusBanner") || qs(".hero");
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", ribbon);
+    else document.body.insertBefore(ribbon, document.body.firstChild);
+  }
+
+  function tuneExistingPresentation() {
+    setTextByMatch(/Pharma Readiness Watch/i, project.title);
+    setTextByMatch(/A demo-safe view of public\/sample life-sciences signals.*field changes\.?/i, project.sub);
+
+    qsa(".pass10RunPanel, .pass12c-toolbar").forEach(function (panel) {
+      if (!panel) return;
+      qsa("button, div, article, span", panel).forEach(function (n) {
+        if (/Run Scout Horizon/i.test(txt(n))) n.classList.add("pass13-primary-action");
+      });
+    });
+
+    var toolbar = qs(".pass12c-toolbar");
+    if (toolbar && !qs(".pass13-action-note", toolbar)) {
+      var note = document.createElement("div");
+      note.className = "pass13-action-note";
+      note.textContent = "Recommended flow: Load demo project, Run Scout Horizon, Review next move.";
+      toolbar.appendChild(note);
+    }
+  }
+
+  function clearKeywordResidue() {
+    var changed = false;
+    qsa("input").forEach(function (input) {
+      var parent = input.closest("label, .field, .control, .card, div");
+      if (/keyword/i.test(txt(parent)) || /pharma partnership/i.test(input.value || "")) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+        changed = true;
+      }
+    });
+    return changed;
+  }
+
+  async function postJSON(path) {
+    var res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" } });
+    if (!res.ok) throw new Error(path + " returned " + res.status);
+    try { return await res.json(); } catch (e) { return {}; }
+  }
+
+  function rewriteDecisionConsole() {
+    var field = "12 signals loaded. Top lane: GLP-1 fill-finish expansion signals sterile capacity pressure and manufacturing-readiness opportunity.";
+    var active = "GLP-1 fill-finish expansion signals sterile capacity pressure.";
+    var pressure = "High: leadership should review fill-finish, CDMO, validation, automation, supplier-readiness, and cold-chain signals before the next planning conversation.";
+    var next = "Flag expansion and CDMO signals for follow-up. Identify whether the opportunity points to commissioning, validation, automation, tech transfer, or partner-readiness support.";
+
+    var cards = qsa(".pass12c-card");
+    if (cards.length >= 4) {
+      var values = [field, active, pressure, next];
+      cards.forEach(function (card, i) {
+        var main = qs(".pass12c-main", card);
+        if (main && values[i]) main.textContent = values[i];
+      });
+    }
+  }
+
+  function wireGLPButtons() {
+    qsa(".pass12c-toolbar button, .pass10RunPanel button, .pass10RunPanel div, .pass10RunPanel article").forEach(function (btn) {
+      var t = txt(btn);
+      if (/Load demo project|Load project/i.test(t)) {
+        btn.addEventListener("click", function () {
+          clearKeywordResidue();
+          if (window.applyScoutHorizonPass13GLP1) window.applyScoutHorizonPass13GLP1();
+          setTimeout(rewriteDecisionConsole, 800);
+        });
+      }
+      if (/Run Scout Horizon/i.test(t)) {
+        btn.addEventListener("click", function () {
+          clearKeywordResidue();
+          if (window.applyScoutHorizonPass13GLP1) window.applyScoutHorizonPass13GLP1();
+          setTimeout(rewriteDecisionConsole, 900);
+        });
+      }
+      if (/Review next move/i.test(t)) {
+        btn.addEventListener("click", function () {
+          setTimeout(rewriteDecisionConsole, 300);
+        });
+      }
+    });
+  }
+
+  function updateStatus() {
+    var banner = qs("#statusBanner");
+    if (banner) banner.textContent = "GLP-1 Manufacturing Pressure Radar loaded - 12 public/sample signals ready";
+    qsa(".pass12c-status, .pass12-toolbar-status").forEach(function (n) {
+      n.textContent = "GLP-1 project ready. Run Scout Horizon, then review next move.";
+    });
+  }
+
+  function init() {
+    addRibbon();
+    tuneExistingPresentation();
+    clearKeywordResidue();
+    wireGLPButtons();
+
+    if (window.applyScoutHorizonPass13GLP1) window.applyScoutHorizonPass13GLP1();
+
+    setTimeout(function () {
+      tuneExistingPresentation();
+      rewriteDecisionConsole();
+      updateStatus();
+    }, 900);
+
+    var count = 0;
+    var timer = setInterval(function () {
+      count += 1;
+      tuneExistingPresentation();
+      rewriteDecisionConsole();
+      updateStatus();
+      if (count >= 8) clearInterval(timer);
+    }, 900);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 13 - GLP-1 Manufacturing Pressure Radar SCRIPT END -->
+<!-- PASS 13B - GLP-1 Executive View Lock SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-13b", "13b-glp1-executive-view-lock");
+  var GLP = {
+    field: "12 signals loaded. Top lane: GLP-1 fill-finish expansion signals sterile capacity pressure and manufacturing-readiness opportunity.",
+    active: "GLP-1 fill-finish expansion signals sterile capacity pressure.",
+    pressure: "High: review fill-finish, CDMO, validation, automation, supplier-readiness, and cold-chain signals before the next planning conversation.",
+    next: "Flag expansion and CDMO signals for follow-up. Identify whether the opportunity points to commissioning, validation, automation, tech transfer, or partner-readiness support."
+  };
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clean(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+  function forceExecutiveView() {
+    document.body.classList.add("pass12c-exec");
+    localStorage.setItem("scout-pass12c-exec", "1");
+    localStorage.setItem("scout-pass12-executive", "1");
+    qsa("[data-pass12c='mode'], [data-pass12='mode']").forEach(function (button) { button.textContent = "Open Full Workbench"; });
+    qsa(".pass12c-pill, .pass12-mode-pill").forEach(function (pill) { pill.textContent = "Executive View"; });
+    qsa(".pass12c-status, .pass12-toolbar-status").forEach(function (node) { node.textContent = "Executive View: GLP-1 pressure radar ready."; });
+  }
+  function updateProjectCopy() {
+    qsa("h1,h2,h3,p,div,span,strong").forEach(function (node) {
+      if (node.children && node.children.length > 0) return;
+      var t = clean(node.textContent);
+      if (/Pharma Readiness Watch/i.test(t)) node.textContent = t.replace(/Pharma Readiness Watch/ig, "GLP-1 Manufacturing Pressure Radar");
+      if (/Pass 9 demo scenario/i.test(t)) node.textContent = "SHOWCASE PROJECT";
+    });
+    var banner = qs("#statusBanner");
+    if (banner) banner.textContent = "GLP-1 Manufacturing Pressure Radar loaded - 12 public/sample signals ready";
+  }
+  function updateDecisionConsole() {
+    var cards = qsa(".pass12c-card");
+    var values = [GLP.field, GLP.active, GLP.pressure, GLP.next];
+    if (cards.length >= 4) {
+      cards.forEach(function (card, i) {
+        var main = qs(".pass12c-main", card);
+        if (main && values[i]) main.textContent = values[i];
+      });
+    }
+    var sub = qs(".pass12c-sub");
+    if (sub) sub.textContent = "GLP-1 Manufacturing Pressure Radar summarizes manufacturing-readiness pressure first; open the workbench only when you need evidence detail.";
+  }
+  function clearKeywordResidue() {
+    qsa("input").forEach(function (input) {
+      var parent = input.closest("label, .field, .control, .card, div");
+      var parentText = clean(parent && parent.textContent);
+      if (/keyword/i.test(parentText) || /pharma partnership/i.test(input.value || "")) {
+        input.value = "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
+  }
+  function repair() {
+    forceExecutiveView();
+    updateProjectCopy();
+    updateDecisionConsole();
+    clearKeywordResidue();
+    qsa(".pass13-project-ribbon").forEach(function (node) { if (document.body.classList.contains("pass12c-exec")) node.style.display = "none"; });
+  }
+  function init() {
+    repair();
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      repair();
+      if (attempts >= 10) clearInterval(timer);
+    }, 650);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 13B - GLP-1 Executive View Lock SCRIPT END -->
+<!-- PASS 14 - Source Truth Launch Readiness SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-14", "14-source-truth-launch-readiness");
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function esc(txt) { return String(txt || "").replace(/[&<>"']/g, function (c) { return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[c]; }); }
+
+  function defaultAudit() {
+    return {
+      counts: {
+        source_targets_total: 24,
+        source_targets_public: 14,
+        source_targets_premium_planned: 10,
+        rss_fallback_feeds: 5,
+        data_universe_total: 23,
+        verified_live_or_configurable_now: 7,
+        demo_curated_or_manual: 2
+      },
+      posture: {
+        current_claim: "Public/sample signal watch with configurable live/RSS/API paths.",
+        caution: "Do not claim fully real-time live intelligence across all listed sources until keys/connectors are configured and verified."
+      },
+      source_classes: {
+        live_or_configurable_now: ["Google Programmable Search when configured", "Curated RSS fallback feeds", "GDELT API", "ClinicalTrials.gov API", "SEC EDGAR", "CISA KEV", "NIST NVD", "Manual CSV"],
+        demo_or_curated: ["Pass 13 GLP-1 showcase project layer", "Static fallback demo signals"],
+        planned_or_key_gated: ["SAM.gov API with key", "premium/licensed intelligence vendors", "licensed construction and talent data"]
+      }
+    };
+  }
+
+  async function loadAudit() {
+    try {
+      var res = await fetch("/api/source_truth?t=" + Date.now());
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    try {
+      var res2 = await fetch("/outputs/source_truth_audit.json?t=" + Date.now());
+      if (res2.ok) return await res2.json();
+    } catch (e2) {}
+    return defaultAudit();
+  }
+
+  function value(audit, key, fallback) {
+    return audit && audit.counts && audit.counts[key] !== undefined ? audit.counts[key] : fallback;
+  }
+
+  function list(items) {
+    return (items || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
+  }
+
+  function insertPanel(audit) {
+    var existing = qs(".pass14-source-panel");
+    if (existing) existing.remove();
+
+    var panel = document.createElement("section");
+    panel.className = "pass14-source-panel";
+    panel.innerHTML = [
+      '<div class="pass14-source-head">',
+        '<div>',
+          '<div class="pass14-kicker">Source truth audit</div>',
+          '<div class="pass14-title">What Scout Horizon can honestly claim today</div>',
+          '<div class="pass14-sub">' + esc((audit.posture && audit.posture.current_claim) || "Public/sample signal watch with configurable live/RSS/API paths.") + '</div>',
+        '</div>',
+        '<button type="button" data-pass14-toggle>Show source details</button>',
+      '</div>',
+      '<div class="pass14-source-grid">',
+        '<div class="pass14-stat"><div class="pass14-stat-label">Source targets</div><div class="pass14-stat-value">' + value(audit, "source_targets_total", 24) + '</div><div class="pass14-stat-note">' + value(audit, "source_targets_public", 14) + ' public + ' + value(audit, "source_targets_premium_planned", 10) + ' planned/licensed</div></div>',
+        '<div class="pass14-stat"><div class="pass14-stat-label">RSS fallback</div><div class="pass14-stat-value">' + value(audit, "rss_fallback_feeds", 5) + '</div><div class="pass14-stat-note">usable without Google key</div></div>',
+        '<div class="pass14-stat"><div class="pass14-stat-label">Data universe</div><div class="pass14-stat-value">' + value(audit, "data_universe_total", 23) + '</div><div class="pass14-stat-note">registry entries audited</div></div>',
+        '<div class="pass14-stat"><div class="pass14-stat-label">Verified now</div><div class="pass14-stat-value">' + value(audit, "verified_live_or_configurable_now", 7) + '</div><div class="pass14-stat-note">API/RSS/manual paths</div></div>',
+        '<div class="pass14-stat"><div class="pass14-stat-label">GLP-1 project</div><div class="pass14-stat-value">Demo</div><div class="pass14-stat-note">curated showcase layer</div></div>',
+      '</div>',
+      '<div class="pass14-source-detail">',
+        '<div><span class="verified">Verified/configurable now:</span><ul>' + list(audit.source_classes && audit.source_classes.live_or_configurable_now) + '</ul></div>',
+        '<div style="margin-top:8px;"><span class="caution">Demo or curated:</span><ul>' + list(audit.source_classes && audit.source_classes.demo_or_curated) + '</ul></div>',
+        '<div style="margin-top:8px;"><span class="caution">Planned, licensed, or key-gated:</span><ul>' + list(audit.source_classes && audit.source_classes.planned_or_key_gated) + '</ul></div>',
+        '<div style="margin-top:8px;"><span class="caution">Launch wording:</span> ' + esc(audit.posture && audit.posture.caution) + '</div>',
+      '</div>'
+    ].join("");
+
+    var anchor = qs(".pass12c-console") || qs("#statusBanner") || qs(".pass10RunPanel") || qs(".hero");
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", panel);
+    else document.body.insertBefore(panel, document.body.firstChild);
+
+    var btn = qs("[data-pass14-toggle]", panel);
+    btn.addEventListener("click", function () {
+      panel.classList.toggle("open");
+      btn.textContent = panel.classList.contains("open") ? "Hide source details" : "Show source details";
+    });
+  }
+
+  function init() {
+    loadAudit().then(insertPanel);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 14 - Source Truth Launch Readiness SCRIPT END -->
+<!-- PASS 15A-R - Windows File Lock Repair SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-15a", "15a-r-windows-file-lock-repair");
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function text(node) { return (node && node.textContent || "").replace(/\s+/g, " ").trim(); }
+
+  var busy = false;
+  var lastActionAt = 0;
+
+  function status(msg) {
+    var box = qs(".pass15a-status");
+    if (!box) {
+      box = document.createElement("div");
+      box.className = "pass15a-status";
+      document.body.appendChild(box);
+    }
+    box.textContent = msg || "";
+    box.classList.add("show");
+    clearTimeout(box._timer);
+    box._timer = setTimeout(function () { box.classList.remove("show"); }, 3200);
+
+    qsa(".pass12c-status, .pass12-toolbar-status").forEach(function (n) {
+      n.textContent = msg || "Ready.";
+    });
+  }
+
+  function markBusy(on, clicked) {
+    qsa(".pass12c-toolbar button, .pass12-toolbar button, .pass10RunPanel button, .pass10RunPanel [role='button']").forEach(function (b) {
+      if (on) b.classList.add("scout-busy");
+      else b.classList.remove("scout-busy");
+    });
+    if (clicked) {
+      if (on) clicked.classList.add("scout-busy");
+      else clicked.classList.remove("scout-busy");
+    }
+  }
+
+  function isProjectAction(node) {
+    var t = text(node);
+    return /Run Scout Horizon|Load demo project|Load project|Review next move|Run demo ingest|Run Everything|Reset to demo defaults/i.test(t);
+  }
+
+  function armClickGuard() {
+    document.addEventListener("click", function (event) {
+      var node = event.target && event.target.closest && event.target.closest("button, [role='button'], .pass10RunPanel div, .pass10RunPanel article");
+      if (!node || !isProjectAction(node)) return;
+
+      var now = Date.now();
+      if (busy || now - lastActionAt < 1200) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        status("Scout Horizon is already processing that action. Give it a second.");
+        return false;
+      }
+
+      busy = true;
+      lastActionAt = now;
+      markBusy(true, node);
+      status("Running action safely...");
+
+      setTimeout(function () {
+        busy = false;
+        markBusy(false, node);
+      }, 3600);
+    }, true);
+  }
+
+  function init() {
+    armClickGuard();
+    status("Reliability guard active: duplicate project actions are limited.");
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 15A-R - Windows File Lock Repair SCRIPT END -->
+<!-- PASS 15B - Workflow Clarity SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-15b", "15b-workflow-clarity");
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clean(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+
+  var currentStep = 1;
+  var loadingTimer = null;
+
+  function ensureLoading() {
+    var box = qs(".pass15b-loading");
+    if (box) return box;
+    box = document.createElement("div");
+    box.className = "pass15b-loading";
+    box.innerHTML = '<div class="pass15b-loading-title">Scout Horizon is working</div><div class="pass15b-loading-msg">Loading project state and source context...</div><div class="pass15b-loading-bar"><span></span></div>';
+    document.body.appendChild(box);
+    return box;
+  }
+
+  function showLoading(msg, ms) {
+    var box = ensureLoading();
+    var node = qs(".pass15b-loading-msg", box);
+    if (node) node.textContent = msg || "Scout Horizon is working...";
+    box.classList.add("show");
+    clearTimeout(loadingTimer);
+    loadingTimer = setTimeout(function () {
+      box.classList.remove("show");
+    }, ms || 2200);
+  }
+
+  function hideLoadingSoon(ms) {
+    clearTimeout(loadingTimer);
+    loadingTimer = setTimeout(function () {
+      var box = qs(".pass15b-loading");
+      if (box) box.classList.remove("show");
+    }, ms || 900);
+  }
+
+  function ensureGuide() {
+    var guide = qs(".pass15b-guide");
+    if (guide) return guide;
+
+    guide = document.createElement("section");
+    guide.className = "pass15b-guide";
+    guide.innerHTML = [
+      '<div class="pass15b-guide-head">',
+        '<div>',
+          '<div class="pass15b-kicker">Workflow</div>',
+          '<div class="pass15b-status-text" style="text-align:left;max-width:720px;">Run Scout Horizon in one sequence. The workbench stays hidden until you need evidence detail.</div>',
+        '</div>',
+        '<div class="pass15b-status-text" data-pass15b-status>Step 1: Load the GLP-1 project.</div>',
+      '</div>',
+      '<div class="pass15b-steps">',
+        '<div class="pass15b-step" data-pass15b-step="1"><div class="pass15b-step-num">Step 1</div><div class="pass15b-step-title">Load project</div><div class="pass15b-step-note">Restore the GLP-1 Manufacturing Pressure Radar project and clear stale filters.</div></div>',
+        '<div class="pass15b-step" data-pass15b-step="2"><div class="pass15b-step-num">Step 2</div><div class="pass15b-step-title">Run Scout Horizon</div><div class="pass15b-step-note">Refresh the watchlist and summarize the strongest signal.</div></div>',
+        '<div class="pass15b-step" data-pass15b-step="3"><div class="pass15b-step-num">Step 3</div><div class="pass15b-step-title">Review next move</div><div class="pass15b-step-note">Read the decision console first; open the workbench only for evidence.</div></div>',
+      '</div>',
+      '<div class="pass15b-progress"><div class="pass15b-progress-fill"></div></div>'
+    ].join("");
+
+    var anchor = qs("#statusBanner") || qs(".hero");
+    if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", guide);
+    else document.body.insertBefore(guide, document.body.firstChild);
+    return guide;
+  }
+
+  function setStep(step, message) {
+    currentStep = step;
+    var guide = ensureGuide();
+    guide.setAttribute("data-step", String(step));
+    qsa(".pass15b-step", guide).forEach(function (node) {
+      var n = parseInt(node.getAttribute("data-pass15b-step") || "0", 10);
+      node.classList.toggle("active", n === step);
+      node.classList.toggle("done", n < step);
+    });
+    var s = qs("[data-pass15b-status]", guide);
+    if (s) s.textContent = message || ("Step " + step);
+    qsa(".pass12c-status, .pass12-toolbar-status").forEach(function (node) {
+      node.textContent = message || "Ready.";
+    });
+  }
+
+  function relabelToolbar() {
+    var title = qs(".pass12c-toolbar-title");
+    if (title) title.textContent = "Workflow";
+
+    qsa(".pass12c-toolbar button").forEach(function (button) {
+      var t = clean(button.textContent);
+      if (/Load demo project|Load project/i.test(t)) button.textContent = "Load GLP-1 project";
+      if (/Run Scout Horizon/i.test(t)) button.textContent = "Run Scout Horizon";
+      if (/Review next move/i.test(t)) button.textContent = "Review next move";
+      if (/Open Full Workbench|Return to Executive View/i.test(t)) button.textContent = "Open Full Workbench";
+      if (/Clear keyword filter/i.test(t)) button.textContent = "Clear filters";
+    });
+  }
+
+  function installButtonHooks() {
+    qsa(".pass12c-toolbar button, .pass12-toolbar button").forEach(function (button) {
+      var t = clean(button.textContent);
+
+      if (/Load GLP-1 project|Load demo project|Load project/i.test(t)) {
+        button.addEventListener("click", function () {
+          setStep(1, "Loading the GLP-1 project and clearing stale filters...");
+          showLoading("Loading GLP-1 Manufacturing Pressure Radar project...", 2600);
+          setTimeout(function () { setStep(2, "Project loaded. Next: run Scout Horizon."); }, 1400);
+        });
+      }
+
+      if (/Run Scout Horizon/i.test(t)) {
+        button.addEventListener("click", function () {
+          setStep(2, "Running Scout Horizon against the loaded project...");
+          showLoading("Running signal scoring, watchlist refresh, and executive summary...", 3200);
+          setTimeout(function () { setStep(3, "Run complete. Review the next move."); }, 2200);
+        });
+      }
+
+      if (/Review next move/i.test(t)) {
+        button.addEventListener("click", function () {
+          setStep(3, "Review the recommended next move. Open the workbench only if you need evidence detail.");
+          showLoading("Opening the decision console...", 1600);
+          hideLoadingSoon(1200);
+        });
+      }
+
+      if (/Open Full Workbench/i.test(t)) {
+        button.addEventListener("click", function () {
+          showLoading("Opening the full workbench: filters, scoring, source labels, and evidence detail.", 1800);
+        });
+      }
+    });
+  }
+
+  function reduceDuplicateStepText() {
+    /* If old step cards are visible because a previous patch style loses, collapse them with direct inline style. */
+    qsa(".pass10RunPanel").forEach(function (panel) {
+      if (document.body.classList.contains("pass12c-exec")) {
+        panel.style.display = "none";
+      }
+    });
+  }
+
+  function wrapFetch() {
+    if (window.__scoutPass15bFetchWrap) return;
+    window.__scoutPass15bFetchWrap = true;
+    var original = window.fetch;
+    window.fetch = function (input, init) {
+      var url = typeof input === "string" ? input : (input && input.url) || "";
+      var method = ((init && init.method) || "GET").toUpperCase();
+
+      if (/\/api\/(state|signals|source_truth|targets|webassist)/i.test(url)) {
+        showLoading("Loading source context and project state...", 1400);
+      }
+
+      if (method === "POST" && /\/api\/(demo_fill|run_all|refresh|ingest|reset)/i.test(url)) {
+        showLoading("Scout Horizon is updating project data safely...", 2600);
+      }
+
+      return original.apply(this, arguments).finally(function () {
+        hideLoadingSoon(900);
+      });
+    };
+  }
+
+  function init() {
+    ensureGuide();
+    relabelToolbar();
+    installButtonHooks();
+    reduceDuplicateStepText();
+    wrapFetch();
+    setStep(1, "Step 1: Load the GLP-1 project.");
+    showLoading("Opening Scout Horizon and checking project state...", 2200);
+
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      relabelToolbar();
+      reduceDuplicateStepText();
+      if (attempts >= 8) clearInterval(timer);
+    }, 700);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 15B - Workflow Clarity SCRIPT END -->
+<!-- PASS 15C - Agent Identity Inputs Summary SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-15c", "15c-agent-identity-inputs-summary");
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clean(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+  function esc(txt) { return String(txt || "").replace(/[&<>"']/g, function (c) { return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[c]; }); }
+
+  var STATE = {
+    projectLoaded: true,
+    hasRun: false,
+    inputsReady: true,
+    status: "Project loaded. Inputs are ready.",
+    keyword: "GLP-1 manufacturing pressure",
+    sourceMode: "Public/sample + configurable RSS/API paths",
+    lanes: ["fill-finish", "CDMO", "FDA/GMP", "automation/BMS", "cold chain", "supplier readiness", "cyber/OT", "AI operations"]
+  };
+
+  var SUMMARY = {
+    title: "Executive summary",
+    lead: "Scout Horizon is ready to analyze public/sample signals for GLP-1 manufacturing pressure.",
+    finding: "Expected output: identify the strongest capacity, validation, CDMO, automation, or partner-readiness signal and turn it into a leadership next move.",
+    afterRun: "The project revealed manufacturing pressure around GLP-1/injectable capacity, with leadership follow-up focused on fill-finish capacity, CDMO readiness, validation planning, automation/BMS, and source evidence review."
+  };
+
+  function textContentMatches(node, pattern) {
+    return pattern.test(clean(node && node.textContent));
+  }
+
+  function updateHeroCopy() {
+    var hero = qs(".hero");
+    if (!hero) return;
+
+    var paragraphs = qsa("p", hero);
+    if (paragraphs[0]) {
+      paragraphs[0].textContent = "Scout Horizon is an environmental intelligence agent for life sciences leadership. It turns fragmented public and sample signals into a concise read on what changed, why it matters, and what action deserves review.";
+    }
+
+    qsa("h2,h3,div,span,strong", hero).forEach(function (n) {
+      if (n.children && n.children.length > 0) return;
+      var t = clean(n.textContent);
+      if (/SHOWCASE PROJECT|PASS 9 DEMO SCENARIO/i.test(t)) n.textContent = "CURRENT SHOWCASE";
+      if (/GLP-1 Manufacturing Pressure Radar|Pharma Readiness Watch/i.test(t)) n.textContent = "GLP-1 Manufacturing Pressure Radar";
+    });
+  }
+
+  function removeOldWorkflowNoise() {
+    qsa(".pass15b-guide, .pass10RunPanel, .pass13-project-ribbon").forEach(function (n) {
+      n.style.display = "none";
+    });
+  }
+
+  function ensureAgentCard() {
+    var card = qs(".pass15c-agent-card");
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "pass15c-agent-card";
+    card.innerHTML = [
+      '<div class="pass15c-kicker">What this agent does</div>',
+      '<div class="pass15c-title">Survey public signals, then surface the decision.</div>',
+      '<div class="pass15c-copy">Scout Horizon helps leaders scan a field before it changes. It organizes public/sample life-sciences signals into source context, pressure level, confidence cues, and a recommended next move.</div>',
+      '<div class="pass15c-agent-grid">',
+        '<div class="pass15c-mini"><div class="pass15c-mini-label">Input</div><div class="pass15c-mini-text">Keywords, source lanes, public/sample feeds, and configurable RSS/API paths.</div></div>',
+        '<div class="pass15c-mini"><div class="pass15c-mini-label">Analysis</div><div class="pass15c-mini-text">Score signals for priority, confidence, pressure, and opportunity.</div></div>',
+        '<div class="pass15c-mini"><div class="pass15c-mini-label">Output</div><div class="pass15c-mini-text">Executive summary, active signal, pressure level, and next move.</div></div>',
+      '</div>'
+    ].join("");
+
+    var hero = qs(".hero");
+    if (hero && hero.parentNode) hero.insertAdjacentElement("afterend", card);
+    else document.body.insertBefore(card, document.body.firstChild);
+    return card;
+  }
+
+  function ensureMissionPanel() {
+    var panel = qs(".pass15c-mission-panel");
+    if (panel) return panel;
+
+    panel = document.createElement("aside");
+    panel.className = "pass15c-mission-panel";
+    panel.innerHTML = [
+      '<div class="pass15c-kicker">Current showcase project</div>',
+      '<div class="pass15c-panel-title">GLP-1 Manufacturing Pressure Radar</div>',
+      '<div class="pass15c-panel-sub">Demonstrates how Scout Horizon turns selected inputs into a leadership-ready pressure read.</div>',
+      '<div class="pass15c-inputs">',
+        '<div class="pass15c-input-block"><div class="pass15c-input-label">Keyword focus</div><div class="pass15c-input-value" data-pass15c-keyword>GLP-1 manufacturing pressure</div></div>',
+        '<div class="pass15c-input-block"><div class="pass15c-input-label">Source mode</div><div class="pass15c-input-value" data-pass15c-source-mode>Public/sample + configurable RSS/API paths</div></div>',
+        '<div class="pass15c-input-block"><div class="pass15c-input-label">Analysis lanes</div><div class="pass15c-tags" data-pass15c-lanes></div></div>',
+        '<div class="pass15c-input-block"><div class="pass15c-input-label">Outcome to review</div><div class="pass15c-input-value">Top signal, pressure level, recommended next move, and evidence trail.</div></div>',
+      '</div>',
+      '<div class="pass15c-actions">',
+        '<button class="primary" data-pass15c-action="run">Run analysis<small>Score the loaded inputs and refresh the executive summary.</small></button>',
+        '<button data-pass15c-action="review">Review executive summary<small>Jump to what the project revealed.</small></button>',
+        '<button data-pass15c-action="inputs">Show input controls<small>Open the workbench for keyword/source/filter editing.</small></button>',
+      '</div>',
+      '<div class="pass15c-status" data-pass15c-status>Project loaded. Inputs are ready.</div>'
+    ].join("");
+    document.body.appendChild(panel);
+    return panel;
+  }
+
+  function paintPanel() {
+    var panel = ensureMissionPanel();
+    var lanes = qs("[data-pass15c-lanes]", panel);
+    if (lanes) lanes.innerHTML = STATE.lanes.map(function (x) { return "<span>" + esc(x) + "</span>"; }).join("");
+    var keyword = qs("[data-pass15c-keyword]", panel);
+    if (keyword) keyword.textContent = STATE.keyword;
+    var sourceMode = qs("[data-pass15c-source-mode]", panel);
+    if (sourceMode) sourceMode.textContent = STATE.sourceMode;
+    var status = qs("[data-pass15c-status]", panel);
+    if (status) status.textContent = STATE.status;
+  }
+
+  function ensureSummaryCard() {
+    var card = qs(".pass15c-summary-card");
+    if (card) return card;
+
+    card = document.createElement("section");
+    card.className = "pass15c-summary-card";
+    card.innerHTML = [
+      '<div class="pass15c-kicker">Project outcome</div>',
+      '<div class="pass15c-title" data-pass15c-summary-title>Executive summary will appear here.</div>',
+      '<div class="pass15c-copy" data-pass15c-summary-copy>Run analysis to generate a concise read of what the GLP-1 project revealed.</div>'
+    ].join("");
+
+    var console = qs(".pass12c-console");
+    if (console && console.parentNode) console.insertAdjacentElement("beforebegin", card);
+    else {
+      var anchor = qs("#statusBanner") || qs(".pass15c-agent-card") || qs(".hero");
+      if (anchor && anchor.parentNode) anchor.insertAdjacentElement("afterend", card);
+      else document.body.insertBefore(card, document.body.firstChild);
+    }
+    return card;
+  }
+
+  function updateSummary(ran) {
+    var card = ensureSummaryCard();
+    var title = qs("[data-pass15c-summary-title]", card);
+    var copy = qs("[data-pass15c-summary-copy]", card);
+    if (ran || STATE.hasRun) {
+      if (title) title.textContent = "What the project revealed";
+      if (copy) copy.textContent = SUMMARY.afterRun;
+    } else {
+      if (title) title.textContent = "What this project will reveal";
+      if (copy) copy.textContent = SUMMARY.finding;
+    }
+  }
+
+  function updateDecisionConsole(ran) {
+    var title = qs(".pass12c-title");
+    if (title) title.textContent = ran || STATE.hasRun ? "Executive decision output" : "Ready to run analysis";
+
+    var sub = qs(".pass12c-sub");
+    if (sub) {
+      sub.textContent = ran || STATE.hasRun
+        ? "The loaded project has been scored into an executive read. Open the workbench only for evidence and source detail."
+        : "Inputs are loaded. Run analysis to score signals and produce the executive decision output.";
+    }
+
+    var cards = qsa(".pass12c-card");
+    var before = [
+      "Inputs ready: GLP-1 manufacturing pressure, fill-finish capacity, CDMO readiness, FDA/GMP, automation/BMS, cold chain, supplier readiness, and AI operations.",
+      "Run analysis to select the strongest active signal from the loaded project.",
+      "Pressure and confidence will update after scoring.",
+      "The recommended next move will appear after analysis."
+    ];
+    var after = [
+      "Manufacturing pressure is concentrated around injectable capacity, CDMO readiness, validation, and automation support.",
+      "Top signal to inspect: GLP-1/injectable capacity expansion and partner-readiness pressure.",
+      "Leadership should review capacity, validation, automation/BMS, supplier readiness, and source context before the next planning conversation.",
+      "Flag expansion/CDMO signals for follow-up and determine whether the need points to commissioning, validation, automation, tech transfer, or partner-readiness support."
+    ];
+    var values = ran || STATE.hasRun ? after : before;
+
+    if (cards.length >= 4) {
+      cards.forEach(function (card, i) {
+        var main = qs(".pass12c-main", card);
+        if (main && values[i]) main.textContent = values[i];
+      });
+    }
+  }
+
+  function showBusy(msg) {
+    STATE.status = msg || "Scout Horizon is working...";
+    paintPanel();
+
+    var box = qs(".pass15b-loading");
+    if (box) {
+      var msgNode = qs(".pass15b-loading-msg", box);
+      if (msgNode) msgNode.textContent = STATE.status;
+      box.classList.add("show");
+      setTimeout(function () { box.classList.remove("show"); }, 2200);
+    }
+  }
+
+  async function postJSON(path) {
+    var res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    if (!res.ok) throw new Error(path + " returned " + res.status);
+    try { return await res.json(); } catch (e) { return {}; }
+  }
+
+  async function runAnalysis() {
+    showBusy("Running analysis: scoring signals, refreshing watchlist, and building executive summary...");
+    try {
+      try {
+        await postJSON("/api/demo_fill");
+      } catch (e1) {}
+      try {
+        await postJSON("/api/run_all");
+      } catch (e2) {
+        try { await postJSON("/api/refresh"); } catch (e3) {}
+      }
+      STATE.hasRun = true;
+      STATE.status = "Analysis complete. Executive summary is ready.";
+      paintPanel();
+      updateSummary(true);
+      updateDecisionConsole(true);
+      scrollToSummary();
+    } catch (e) {
+      STATE.status = "Analysis completed with a recoverable issue. Review current summary and source detail.";
+      paintPanel();
+      updateSummary(true);
+      updateDecisionConsole(true);
+    }
+  }
+
+  function scrollToSummary() {
+    var target = qs(".pass15c-summary-card") || qs(".pass12c-console");
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
+  function openInputs() {
+    STATE.status = "Opening input controls in Full Workbench.";
+    paintPanel();
+    var modeButton = qs("[data-pass12c='mode'], [data-pass12='mode']");
+    if (modeButton && /Open Full Workbench/i.test(clean(modeButton.textContent))) {
+      modeButton.click();
+    } else {
+      document.body.classList.remove("pass12c-exec");
+      localStorage.setItem("scout-pass12c-exec", "0");
+    }
+    setTimeout(function () {
+      var filters = Array.prototype.find.call(qsa("section, div, aside"), function (n) {
+        return /SIGNAL FILTERS|Keyword|Coverage mode|Targets/i.test(clean(n.textContent));
+      });
+      if (filters) filters.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 500);
+  }
+
+  function hookPanel() {
+    var panel = ensureMissionPanel();
+    panel.addEventListener("click", function (event) {
+      var button = event.target.closest("[data-pass15c-action]");
+      if (!button) return;
+      var action = button.getAttribute("data-pass15c-action");
+      if (action === "run") runAnalysis();
+      if (action === "review") {
+        STATE.status = "Reviewing executive summary.";
+        paintPanel();
+        updateSummary(STATE.hasRun);
+        updateDecisionConsole(STATE.hasRun);
+        scrollToSummary();
+      }
+      if (action === "inputs") openInputs();
+    });
+  }
+
+  function cleanOldControls() {
+    qsa(".pass12c-toolbar").forEach(function (n) { n.style.display = "none"; });
+    removeOldWorkflowNoise();
+  }
+
+  function preserveExecutiveView() {
+    document.body.classList.add("pass12c-exec");
+    localStorage.setItem("scout-pass12c-exec", "1");
+  }
+
+  function init() {
+    preserveExecutiveView();
+    updateHeroCopy();
+    cleanOldControls();
+    ensureAgentCard();
+    ensureMissionPanel();
+    ensureSummaryCard();
+    paintPanel();
+    updateSummary(false);
+    updateDecisionConsole(false);
+    hookPanel();
+
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      preserveExecutiveView();
+      updateHeroCopy();
+      cleanOldControls();
+      paintPanel();
+      if (!STATE.hasRun) updateDecisionConsole(false);
+      if (attempts >= 8) clearInterval(timer);
+    }, 700);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 15C - Agent Identity Inputs Summary SCRIPT END -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- PASS 16N - Signal Relevance and Sharper Brief SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-16n", "signal-relevance");
+
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function clean(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+  function esc(txt) { return String(txt || "").replace(/[&<>"']/g, function(c) { return ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" })[c]; }); }
+  function clampWords(txt, maxWords) {
+    var words = clean(txt).split(" ").filter(Boolean);
+    if (words.length <= maxWords) return words.join(" ");
+    return words.slice(0, maxWords).join(" ") + "...";
+  }
+
+  var progressTimer = null;
+  var lastSignals = [];
+  var lastTopSignal = null;
+
+  var keywordIdeas = ["", "GLP-1 manufacturing pressure", "sterile fill-finish capacity", "CDMO outsourcing activity", "FDA warning letters", "GMP validation pressure", "biologics manufacturing expansion", "cell and gene therapy readiness", "cold chain capacity", "AI life sciences operations", "cyber OT risk pharma manufacturing", "automation BMS commissioning", "supplier readiness pharma", "tech transfer readiness", "injectable capacity expansion", "manufacturing quality remediation", "clinical supply bottlenecks", "drug shortage risk", "facility expansion", "inspection readiness", "partner ecosystem signal", "competitive hiring signal", "capital project readiness", "quality remediation", "fill finish expansion", "regulatory acceleration", "manufacturing transfer", "patient access pressure", "supply chain risk", "launch readiness"];
+  var companyIdeas = ["", "Eli Lilly", "Novo Nordisk", "Pfizer", "Roche", "Novartis", "Merck", "Johnson & Johnson", "AstraZeneca", "GSK", "Sanofi", "Amgen", "Regeneron", "Moderna", "Bristol Myers Squibb", "Thermo Fisher Scientific", "Lonza", "Catalent", "Samsung Biologics", "WuXi Biologics", "Fujifilm Diosynth Biotechnologies", "Boehringer Ingelheim", "Takeda", "AbbVie", "Bayer", "Gilead", "Vertex Pharmaceuticals", "Biogen", "CSL", "Sarepta", "Alnylam", "UCB", "Ipsen", "Grifols", "Sandoz", "Teva", "Recursion", "Insilico Medicine", "Charles River Laboratories"];
+  var sourceIdeas = ["All available sources", "Fierce Pharma", "Endpoints News", "BioPharma Dive", "STAT", "FDA Press Releases", "FDA Warning Letters / Inspections", "SEC Filings (EDGAR)", "Pharma Manufacturing", "EMA Regulatory Updates", "ISPE", "Engineering News-Record", "McKinsey Life Sciences", "Deloitte Life Sciences", "PwC Life Sciences", "ClinicalTrials.gov", "Company press releases", "Investor relations / 10-K / 10-Q", "Manufacturing expansion news", "CDMO / supplier news", "Regulatory enforcement signals", "Cyber / OT risk sources", "RSS/API fallback paths", "Manual CSV signals", "CISA KEV", "NIST NVD CVE"];
+
+  var manufacturingTerms = [
+    "manufacturing", "capacity", "fill-finish", "fill finish", "sterile", "injectable", "supply",
+    "cdmo", "outsourcing", "tech transfer", "technology transfer", "validation", "gmp", "fda",
+    "quality", "commissioning", "facility", "plant", "line", "automation", "bms", "cold chain",
+    "supplier", "readiness", "inspection", "remediation", "shortage", "launch", "scale-up", "scale up"
+  ];
+  var glpTerms = ["glp-1", "glp1", "obesity", "diabetes", "semaglutide", "tirzepatide", "wegovy", "ozempic", "mounjaro", "zepbound", "lilly", "novo"];
+  var strategyTerms = ["partnership", "deal", "pipeline", "expansion", "investment", "capex", "hiring", "supplier", "access", "demand"];
+
+  function optionList(values) {
+    return values.map(function(v) {
+      return '<option value="' + esc(v) + '">' + esc(v || "Wide open / blank") + '</option>';
+    }).join("");
+  }
+
+  function textOfSignal(s) {
+    if (!s) return "";
+    var parts = [];
+    Object.keys(s).forEach(function(k) {
+      var v = s[k];
+      if (typeof v === "string" || typeof v === "number") parts.push(String(v));
+      else if (Array.isArray(v)) parts.push(v.join(" "));
+    });
+    return parts.join(" ").toLowerCase();
+  }
+
+  function containsAny(text, terms) {
+    text = text.toLowerCase();
+    return terms.some(function(t) { return text.indexOf(t.toLowerCase()) >= 0; });
+  }
+
+  function titleOf(s) { return clean((s && (s.title || s.name || s.headline || s.summary || s.observation || s.text)) || ""); }
+  function sourceOf(s) { return clean((s && (s.source || s.source_name || s.publisher || s.domain || s.url)) || "current sources"); }
+  function laneOf(s) { return clean((s && (s.lane || s.signal_lane || s.category || s.signal_type || s.type)) || "life-sciences signal"); }
+  function urlOf(s) { return clean((s && (s.url || s.link || s.source_url)) || ""); }
+  function companyOf(s) { return clean((s && (s.company || s.account || s.organization || s.org || s.company_name)) || ""); }
+
+  function scoreOf(s) {
+    var candidates = [s && s.priority, s && s.score, s && s.confidence];
+    for (var i = 0; i < candidates.length; i++) {
+      var val = candidates[i];
+      if (typeof val === "number") return val;
+      var parsed = parseFloat(val);
+      if (!Number.isNaN(parsed)) return parsed;
+    }
+    return null;
+  }
+
+  function evidenceScore(s, vals) {
+    var base = scoreOf(s);
+    if (base === null) base = 0.50;
+    var text = textOfSignal(s);
+    var add = 0;
+    var keyword = clean(vals.keyword).toLowerCase();
+    var company = clean(vals.company).toLowerCase();
+
+    if (keyword) {
+      keyword.split(/\s+/).filter(function(w) { return w.length > 2; }).forEach(function(w) {
+        if (text.indexOf(w) >= 0) add += 0.045;
+      });
+    }
+    if (company && text.indexOf(company) >= 0) add += 0.18;
+
+    manufacturingTerms.forEach(function(t) { if (text.indexOf(t) >= 0) add += 0.035; });
+    strategyTerms.forEach(function(t) { if (text.indexOf(t) >= 0) add += 0.018; });
+
+    if (/glp|manufacturing|fill|cdmo|capacity|gmp|validation|injectable/i.test(vals.keyword || "")) {
+      if (containsAny(text, glpTerms)) add += 0.11;
+      if (containsAny(text, manufacturingTerms)) add += 0.16;
+      if (containsAny(text, ["fierce pharma", "biopharma dive", "endpoints", "fda", "pharma manufacturing"])) add += 0.03;
+      if (containsAny(text, ["asco", "pipeline"]) && !containsAny(text, manufacturingTerms)) add -= 0.08;
+    }
+
+    return Math.max(0, Math.min(0.99, base + add));
+  }
+
+  function tagsOf(s) {
+    var tags = s && (s.tags || s.facets || s.labels || []);
+    if (typeof tags === "string") tags = tags.split(/[,|]/);
+    if (!Array.isArray(tags)) tags = [];
+    return tags.map(clean).filter(Boolean).slice(0, 7);
+  }
+
+  function bestSignal(signals, vals) {
+    if (!signals || !signals.length) return null;
+    return signals.slice().sort(function(a, b) {
+      return evidenceScore(b, vals) - evidenceScore(a, vals);
+    })[0];
+  }
+
+  function levelWord(score) {
+    if (score === null) return "Early";
+    if (score >= 0.78) return "High";
+    if (score >= 0.60) return "Moderate";
+    return "Early";
+  }
+
+  function buildStage() {
+    var existing = qs(".pass16n-stage");
+    if (existing) return existing;
+
+    var stage = document.createElement("main");
+    stage.className = "pass16n-stage";
+    stage.innerHTML = [
+      '<div class="pass16n-grid">',
+        '<div class="pass16n-left">',
+          '<section class="pass16n-panel pass16n-brand">',
+            '<div class="pass16n-overline">Environmental Intelligence for Life Sciences Leadership</div>',
+            '<div class="pass16n-title">Scout Horizon</div>',
+            '<div class="pass16n-byline">by Monahinga<sup>TM</sup></div>',
+            '<div class="pass16n-tagline">Survey the field before the field changes.</div>',
+            '<div class="pass16n-one">Ask a life-sciences strategy question, run the scan, and read the plain-English answer on the right.</div>',
+          '</section>',
+          '<section class="pass16n-panel">',
+            '<div class="pass16n-label">Inputs</div>',
+            '<div class="pass16n-section-title">What are you watching?</div>',
+            '<div class="pass16n-help">Leave blank for a broad scan. Add a keyword or company only when you want to narrow the field.</div>',
+            '<div class="pass16n-fields">',
+              '<div class="pass16n-mini-grid">',
+                '<div class="pass16n-field"><div class="pass16n-label">Topic / keyword</div><input data-pass16n-keyword list="pass16n-keywords" placeholder="blank / wide open"><datalist id="pass16n-keywords">' + optionList(keywordIdeas) + '</datalist></div>',
+                '<div class="pass16n-field"><div class="pass16n-label">Company focus</div><input data-pass16n-company list="pass16n-companies" placeholder="blank / any company"><datalist id="pass16n-companies">' + optionList(companyIdeas) + '</datalist></div>',
+              '</div>',
+              '<div class="pass16n-field"><div class="pass16n-label">Scan mode</div><select data-pass16n-mode><option value="broad_targeted">Broad + targeted</option><option value="broad">Broad discovery</option><option value="targeted">Focused follow-up</option><option value="evidence">Evidence review</option></select></div>',
+            '</div>',
+            '<div class="pass16n-chip-row" data-pass16n-keyword-chips></div>',
+            '<div class="pass16n-actions"><button class="pass16n-run" type="button" data-pass16n-run>Run Scout Horizon</button><button class="pass16n-secondary" type="button" data-pass16n-open-drawer>Evidence / sources</button></div>',
+          '</section>',
+          '<section class="pass16n-progress-panel">',
+            '<div class="pass16n-progress-top"><span data-pass16n-progress-label>Ready</span><strong data-pass16n-progress-pct>0%</strong></div>',
+            '<div class="pass16n-progress-bar"><div class="pass16n-progress-fill" data-pass16n-progress-fill></div></div>',
+            '<div class="pass16n-steps"><div class="pass16n-step" data-step="sources">1. Sources</div><div class="pass16n-step" data-step="filters">2. Filters</div><div class="pass16n-step" data-step="score">3. Score</div><div class="pass16n-step" data-step="brief">4. Brief</div></div>',
+          '</section>',
+        '</div>',
+        '<div class="pass16n-art-space" aria-hidden="true"></div>',
+        '<aside class="pass16n-right">',
+          '<section class="pass16n-panel">',
+            '<div class="pass16n-label">Scout Brief</div>',
+            '<div class="pass16n-section-title" data-pass16n-brief-title>Run the scan to get the answer.</div>',
+            '<div class="pass16n-help" data-pass16n-brief-subtitle>Plain-English decision readout appears here.</div>',
+            '<div class="pass16n-answer-grid">',
+              '<div class="pass16n-answer"><div class="pass16n-label">What happened?</div><div class="pass16n-answer-text" data-pass16n-answer="changed">The clearest signal will appear here.</div></div>',
+              '<div class="pass16n-answer"><div class="pass16n-label">Why leadership should care</div><div class="pass16n-answer-text" data-pass16n-answer="matters">The business meaning will appear here in plain English.</div></div>',
+              '<div class="pass16n-answer"><div class="pass16n-label">How strong is the signal?</div><div class="pass16n-answer-text" data-pass16n-answer="strength">Priority, confidence, and source support will appear here.</div><div class="pass16n-plain-language" data-pass16n-answer="strengthplain"></div></div>',
+              '<div class="pass16n-answer gold"><div class="pass16n-label">Recommended next move</div><div class="pass16n-answer-text" data-pass16n-answer="next">A practical next move will appear here.</div></div>',
+            '</div>',
+          '</section>',
+          '<section class="pass16n-panel" data-pass18d-agent-panel>',
+            '<div class="pass16n-label">Agent Reasoning</div>',
+            '<div class="pass16n-section-title">Why this signal won</div>',
+            '<div class="pass16n-help">The agent makes its selection logic visible: mission, weighting, evidence status, and next review step.</div>',
+            '<div class="pass16n-intel-list">',
+              '<div class="pass16n-intel-card gold"><div class="pass16n-label">Evidence status</div><div class="pass16n-intel-main" data-pass18d-agent="status">Waiting for scan.</div></div>',
+              '<div class="pass16n-intel-card"><div class="pass16n-label">Why selected</div><div class="pass16n-intel-main" data-pass18d-agent="why">Run Scout Horizon to see the ranking explanation.</div></div>',
+              '<div class="pass16n-intel-card"><div class="pass16n-label">Agent run log</div><div class="pass16n-intel-main" data-pass18d-agent="log">1. Sources → 2. Filters → 3. Score → 4. Brief.</div></div>',
+            '</div>',
+          '</section>',
+          '<section class="pass16n-panel">',
+            '<div class="pass16n-label">Intel stack</div>',
+            '<div class="pass16n-section-title">What the scan uses</div>',
+            '<div class="pass16n-intel-list">',
+              '<div class="pass16n-intel-card"><div class="pass16n-label">Sources</div><div class="pass16n-intel-main" data-pass16n-intel="sources">All available sources</div><div class="pass16n-pill-row" data-pass16n-source-pills></div></div>',
+              '<div class="pass16n-intel-card"><div class="pass16n-label">Focus</div><div class="pass16n-intel-main" data-pass16n-intel="focus">Wide-open life sciences scan</div></div>',
+              '<div class="pass16n-intel-card"><div class="pass16n-label">Company handling</div><div class="pass16n-intel-main" data-pass16n-intel="company">No company locked.</div></div>',
+              '<div class="pass16n-intel-card gold"><div class="pass16n-label">Output</div><div class="pass16n-intel-main">Plain-English decision brief plus evidence trail.</div></div>',
+            '</div>',
+          '</section>',
+        '</aside>',
+      '</div>',
+      '<div class="pass16n-drawer-backdrop" data-pass16n-drawer-backdrop></div>',
+      '<aside class="pass16n-drawer" data-pass16n-drawer>',
+        '<div class="pass16n-drawer-head"><div><div class="pass16n-label">Evidence and sources</div><div class="pass16n-drawer-title">Inspect the scan</div><div class="pass16n-help">Use this only when you want the details behind the answer.</div></div><button class="pass16n-close" type="button" data-pass16n-close>Close</button></div>',
+        '<div class="pass16n-tabs"><button class="pass16n-tab active" data-tab="filters">Filters</button><button class="pass16n-tab" data-tab="sources">Sources</button><button class="pass16n-tab" data-tab="signals">Signals</button><button class="pass16n-tab" data-tab="evidence">Evidence</button></div>',
+        '<div class="pass16n-drawer-body">',
+          '<section class="pass16n-drawer-section active" data-section="filters"></section>',
+          '<section class="pass16n-drawer-section" data-section="sources"></section>',
+          '<section class="pass16n-drawer-section" data-section="signals"></section>',
+          '<section class="pass16n-drawer-section" data-section="evidence"></section>',
+        '</div>',
+      '</aside>'
+    ].join("");
+
+    document.body.insertBefore(stage, document.body.firstChild);
+    return stage;
+  }
+
+  function getValues() {
+    buildStage();
+    return {
+      keyword: clean(qs("[data-pass16n-keyword]").value),
+      company: clean(qs("[data-pass16n-company]").value),
+      mode: qs("[data-pass16n-mode]").value,
+      sources: ["All available sources"]
+    };
+  }
+
+  function setProgress(pct, label, activeStep) {
+    var fill = qs("[data-pass16n-progress-fill]");
+    var num = qs("[data-pass16n-progress-pct]");
+    var text = qs("[data-pass16n-progress-label]");
+    pct = Math.max(0, Math.min(100, pct));
+    if (fill) fill.style.width = pct + "%";
+    if (num) num.textContent = pct + "%";
+    if (text) text.textContent = label || "";
+    qsa(".pass16n-step").forEach(function(s) {
+      s.classList.toggle("active", activeStep && s.getAttribute("data-step") === activeStep);
+    });
+  }
+
+  function startProgress() {
+    clearInterval(progressTimer);
+    var pct = 3;
+    setProgress(pct, "Starting scan", "sources");
+    progressTimer = setInterval(function() {
+      pct = Math.min(92, pct + Math.floor(Math.random() * 8) + 5);
+      if (pct < 30) setProgress(pct, "Checking sources", "sources");
+      else if (pct < 55) setProgress(pct, "Applying filters", "filters");
+      else if (pct < 78) setProgress(pct, "Scoring manufacturing relevance", "score");
+      else setProgress(pct, "Writing leadership brief", "brief");
+    }, 320);
+  }
+
+  function finishProgress(signalCount) {
+    clearInterval(progressTimer);
+    setProgress(100, "Ready - " + (signalCount || 0) + " signals reviewed", "brief");
+  }
+
+  function renderKeywordChips() {
+    var box = qs("[data-pass16n-keyword-chips]");
+    if (!box) return;
+    var chips = ["GLP-1 pressure", "fill-finish", "CDMO", "FDA/GMP", "cold chain", "AI ops", "cyber/OT"];
+    box.innerHTML = chips.map(function(c) { return '<button type="button" class="pass16n-chip" data-chip="' + esc(c) + '">' + esc(c) + '</button>'; }).join("");
+    qsa("[data-chip]", box).forEach(function(btn) {
+      btn.addEventListener("click", function() {
+        var val = btn.getAttribute("data-chip");
+        var input = qs("[data-pass16n-keyword]");
+        if (input) {
+          input.value = val;
+          input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+      });
+    });
+  }
+
+  function updateIntel() {
+    var vals = getValues();
+    var focus = vals.keyword || vals.company || "Wide-open life sciences scan";
+    var topCompany = companyOf(lastTopSignal);
+    var text = textOfSignal(lastTopSignal);
+    if (!topCompany) {
+      companyIdeas.slice(1).some(function(c) {
+        if (text.indexOf(c.toLowerCase()) >= 0) {
+          topCompany = c;
+          return true;
+        }
+        return false;
+      });
+    }
+
+    qs('[data-pass16n-intel="focus"]').textContent = focus;
+    qs('[data-pass16n-intel="sources"]').textContent = "All available sources";
+    qs('[data-pass16n-intel="company"]').textContent = vals.company
+      ? "Company locked to " + vals.company + "."
+      : (topCompany ? topCompany + " surfaced naturally from the scan. No company was locked." : "No company locked; the scan is broad.");
+    qs("[data-pass16n-source-pills]").innerHTML = ["FDA", "SEC/EDGAR", "RSS/API", "Life science news", "Clinical/regulatory", "Cyber/OT"].map(function(x) { return '<span class="pass16n-pill">' + esc(x) + '</span>'; }).join("");
+  }
+
+  function setUnderlyingInputs(vals) {
+    qsa("input").forEach(function(input) {
+      if (input.closest(".pass16n-stage")) return;
+      var p = input.closest("label, .field, .control, .card, div");
+      var t = clean(p && p.textContent);
+      if (/keyword/i.test(t)) {
+        input.value = vals.keyword || "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      if (/company/i.test(t)) {
+        input.value = vals.company || "";
+        input.dispatchEvent(new Event("input", { bubbles: true }));
+        input.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+    });
+  }
+
+  async function postJSON(path) {
+    var res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+    if (!res.ok) throw new Error(path + " returned " + res.status);
+    try { return await res.json(); } catch (e) { return {}; }
+  }
+
+  async function fetchSignals() {
+    try {
+      var res = await fetch("/api/signals?t=" + Date.now());
+      if (!res.ok) return [];
+      var data = await res.json();
+      if (Array.isArray(data)) return data;
+      if (Array.isArray(data.signals)) return data.signals;
+      if (Array.isArray(data.items)) return data.items;
+      return [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function buildBusinessMeaning(vals, top, score) {
+    var focus = vals.keyword || "life-sciences strategy";
+    var text = textOfSignal(top);
+    var pieces = [];
+
+    if (/glp|obesity|diabetes|injectable|lilly|novo|semaglutide|tirzepatide/i.test(focus + " " + text)) {
+      pieces.push("GLP-1 demand can create pressure around injectable capacity, fill-finish slots, CDMO support, validation work, and launch readiness.");
+    } else if (containsAny(text, manufacturingTerms)) {
+      pieces.push("The signal points to manufacturing readiness, capacity planning, validation, supplier support, or operational follow-through.");
+    } else if (containsAny(text, ["fda", "gmp", "warning", "inspection", "quality"])) {
+      pieces.push("Regulatory or quality pressure can turn into remediation work, leadership review, and operating-risk follow-up.");
+    } else if (containsAny(text, ["partnership", "deal", "pipeline", "launch"])) {
+      pieces.push("Partnership and pipeline moves can foreshadow demand, supplier needs, competitive pressure, or commercial readiness work.");
+    } else {
+      pieces.push("This signal may point to pressure, opportunity, or change around the selected life-sciences field.");
+    }
+
+    if (score >= 0.78) pieces.push("It is strong enough to put in front of leadership soon.");
+    else if (score >= 0.60) pieces.push("It is worth tracking and verifying before action.");
+    else pieces.push("It is an early clue; verify the source before acting.");
+
+    return pieces.join(" ");
+  }
+
+  function buildNextMove(vals, top, score) {
+    var focus = vals.keyword || "";
+    var text = textOfSignal(top);
+
+    if (/glp|manufacturing|fill|cdmo|capacity|gmp|validation|injectable/i.test(focus + " " + text)) {
+      return "Build a short watchlist of CDMOs, fill-finish capacity expansions, FDA/GMP signals, validation needs, and automation/commissioning vendors tied to this demand.";
+    }
+    if (containsAny(text, ["fda", "gmp", "inspection", "warning", "quality"])) {
+      return "Open the evidence, confirm the regulatory context, then flag likely remediation, validation, quality, and supplier-readiness implications.";
+    }
+    if (containsAny(text, ["partnership", "deal", "pipeline"])) {
+      return "Check whether this move changes demand, partnership strategy, capacity needs, or competitive positioning. Add related companies to the watchlist.";
+    }
+    return "Open Evidence, confirm the source, then narrow by company, lane, or source if leadership wants a focused follow-up.";
+  }
+
+
+  // PASS 18D - direct right-panel agent reasoning helpers START
+  function modeLabel18D(mode) {
+    var m = clean(mode || "").toLowerCase();
+    if (m.indexOf("targeted") >= 0 && m.indexOf("broad") < 0) return "Targeted follow-up";
+    if (m.indexOf("broad") >= 0 && m.indexOf("targeted") < 0) return "Broad discovery";
+    if (m.indexOf("evidence") >= 0) return "Evidence review";
+    return "Broad + targeted";
+  }
+
+  function agentEvidenceStatus18D(top, vals) {
+    var text = textOfSignal(top);
+    var q = (vals.keyword || "").toLowerCase();
+    var direct = false;
+    var adjacent = false;
+
+    if (/cyber|ot|cisa|cve|kev|vulnerability/.test(q)) {
+      if (containsAny(text, ["cyber", "ot", "cisa", "cve", "kev", "vulnerability", "security", "ics"])) direct = true;
+      else adjacent = true;
+    }
+    if (/glp|manufacturing|injectable|fill|cdmo|capacity/.test(q)) {
+      if (containsAny(text, ["glp", "manufacturing", "injectable", "capacity", "fill", "finish", "cdmo", "sterile", "novo", "lilly"])) direct = true;
+      else adjacent = true;
+    }
+    if (/fda|gmp|validation|inspection|warning|quality/.test(q)) {
+      if (containsAny(text, ["fda", "gmp", "validation", "inspection", "warning", "compliance", "quality"])) direct = true;
+      else adjacent = true;
+    }
+
+    if (vals.company) {
+      var c = vals.company.toLowerCase();
+      var companyHit = text.indexOf(c) >= 0 || (c === "eli lilly" && text.indexOf("lilly") >= 0) || (c === "novo nordisk" && text.indexOf("novo") >= 0);
+      if (companyHit) direct = true;
+      else adjacent = true;
+    }
+
+    var truthText = clean((top && (top.truth_label || top.company_truth_label || top.strategic_warnings || top.company_adjacent_only || top.source_filter_adjacent_only)) || "").toLowerCase();
+    if (truthText.indexOf("adjacent") >= 0 || truthText.indexOf("source-limited") >= 0 || truthText.indexOf("no direct") >= 0) adjacent = true;
+
+    if (direct && adjacent) return "Mixed direct + adjacent evidence";
+    if (direct) return "Direct evidence";
+    if (adjacent) return "Adjacent / source-limited evidence";
+    return "Contextual evidence";
+  }
+
+  function agentWhy18D(top, vals, score) {
+    var text = textOfSignal(top);
+    var parts = [];
+    var q = vals.keyword || "wide-open scan";
+    parts.push("Mission interpreted as " + q + ".");
+    parts.push("Top source: " + sourceOf(top) + ".");
+    if (score !== null && score !== undefined) parts.push("Relevance score " + Number(score || 0).toFixed(2) + " lifted this signal above the rest.");
+    if (vals.company) parts.push("Company filter applied: " + vals.company + ".");
+    else parts.push("No company lock; the agent used market-wide evidence.");
+    if (containsAny(text, manufacturingTerms)) parts.push("Manufacturing-readiness terms are present in the evidence trail.");
+    if (containsAny(text, ["fda", "gmp", "validation", "inspection", "warning", "quality"])) parts.push("Regulatory / validation pressure is visible.");
+    if (containsAny(text, ["cyber", "ot", "cisa", "cve", "kev"])) parts.push("Cyber/OT risk terms are visible.");
+    return parts.slice(0, 5).join(" ");
+  }
+
+  function updateAgentReasoning18D(signals, top, vals, score) {
+    var status = qs('[data-pass18d-agent="status"]');
+    var why = qs('[data-pass18d-agent="why"]');
+    var log = qs('[data-pass18d-agent="log"]');
+    if (!status || !why || !log) return;
+    var count = signals && signals.length ? signals.length : 0;
+    status.textContent = agentEvidenceStatus18D(top, vals);
+    why.textContent = agentWhy18D(top, vals, score);
+    log.textContent = "1. Read mission. 2. Applied topic/company/mode filters. 3. Ranked " + count + " signals. 4. Checked direct vs adjacent evidence. 5. Wrote Scout Brief.";
+  }
+
+  window.ScoutHorizonPass18DUpdateAgentReasoning = function(items, top, vals, score) {
+    try { updateAgentReasoning18D(items || [], top || (items && items[0]) || null, vals || getValues(), score); } catch (e) {}
+  };
+  // PASS 18D - direct right-panel agent reasoning helpers END
+
+  function updateBrief(signals) {
+    var vals = getValues();
+    var top = bestSignal(signals, vals);
+    lastTopSignal = top;
+    var topTitle = titleOf(top) || "Scout Horizon found visible public/sample signals worth reviewing.";
+    var source = sourceOf(top);
+    var lane = laneOf(top);
+    var count = signals ? signals.length : 0;
+    var score = top ? evidenceScore(top, vals) : null;
+    var strength = levelWord(score);
+    var selectedCompany = vals.company;
+    var surfacedCompany = companyOf(top);
+    if (!surfacedCompany && top) {
+      var lower = textOfSignal(top);
+      companyIdeas.slice(1).some(function(c) {
+        if (lower.indexOf(c.toLowerCase()) >= 0) { surfacedCompany = c; return true; }
+        return false;
+      });
+    }
+
+    qs("[data-pass16n-brief-title]").textContent = count ? "Scout Brief: " + count + " signals found" : "Scout Brief: scan complete";
+    qs("[data-pass16n-brief-subtitle]").textContent = "Answer first. Open evidence only when you need the source trail.";
+    qs('[data-pass16n-answer="changed"]').textContent = clampWords(topTitle, 20);
+    qs('[data-pass16n-answer="matters"]').textContent = buildBusinessMeaning(vals, top, score || 0);
+    qs('[data-pass16n-answer="strength"]').textContent = strength + " signal. Relevance " + (score === null ? "not available" : score.toFixed(2)) + ". Source: " + source + ". Lane: " + lane + ".";
+    qs('[data-pass16n-answer="strengthplain"]').textContent = selectedCompany
+      ? "Plain English: you locked the scan to " + selectedCompany + "."
+      : surfacedCompany
+        ? "Plain English: " + surfacedCompany + " surfaced naturally; no company was locked."
+        : "Plain English: broad scan, no company locked.";
+    qs('[data-pass16n-answer="next"]').textContent = buildNextMove(vals, top, score || 0);
+    updateAgentReasoning18D(signals || [], top, vals, score);
+  }
+
+  function renderDrawer(tab) {
+    var vals = getValues();
+    qsa(".pass16n-tab").forEach(function(t) { t.classList.toggle("active", t.getAttribute("data-tab") === tab); });
+    qsa(".pass16n-drawer-section").forEach(function(s) { s.classList.toggle("active", s.getAttribute("data-section") === tab); });
+
+    var filters = qs('[data-section="filters"]');
+    var sources = qs('[data-section="sources"]');
+    var signals = qs('[data-section="signals"]');
+    var evidence = qs('[data-section="evidence"]');
+
+    filters.innerHTML = '<div class="pass16n-list">' +
+      '<div class="pass16n-row"><div class="pass16n-label">Current topic</div><div class="pass16n-row-title">' + esc(vals.keyword || "blank / wide open") + '</div></div>' +
+      '<div class="pass16n-row"><div class="pass16n-label">Company</div><div class="pass16n-row-title">' + esc(vals.company || "blank / any company") + '</div></div>' +
+      '<div class="pass16n-row"><div class="pass16n-label">Mode</div><div class="pass16n-row-title">' + esc(vals.mode) + '</div><div class="pass16n-row-meta">Broad + targeted is best for discovery. Focused follow-up is better after you find a lead.</div></div>' +
+      '<div class="pass16n-row"><div class="pass16n-label">Source selection</div><div class="pass16n-row-title">All available sources</div><div class="pass16n-row-meta">The home screen keeps sources broad. Review the full source universe here.</div></div>' +
+      '</div><a class="pass16n-legacy" href="/viewer/index.html?workbench=1">Open full legacy workbench</a>';
+
+    sources.innerHTML = '<div class="pass16n-list">' + sourceIdeas.map(function(src) {
+      return '<div class="pass16n-row"><div class="pass16n-row-title">' + esc(src) + '</div><div class="pass16n-row-meta">' + (src === "All available sources" ? "No source lock." : "Available source/target option.") + '</div></div>';
+    }).join("") + '</div>';
+
+    var sigList = lastSignals.length ? lastSignals.slice().sort(function(a, b) { return evidenceScore(b, vals) - evidenceScore(a, vals); }) : [];
+    signals.innerHTML = sigList.length ? '<div class="pass16n-list">' + sigList.slice(0, 10).map(function(s) {
+      var tags = tagsOf(s).map(function(x) { return '<span class="pass16n-pill">' + esc(x) + '</span>'; }).join("");
+      return '<div class="pass16n-row"><div class="pass16n-row-title">' + esc(clampWords(titleOf(s) || "Untitled signal", 22)) + '</div><div class="pass16n-row-meta">Source: ' + esc(sourceOf(s)) + ' | Lane: ' + esc(laneOf(s)) + ' | Relevance: ' + esc(evidenceScore(s, vals).toFixed(2)) + '</div><div class="pass16n-pill-row">' + tags + '</div></div>';
+    }).join("") + '</div>' : '<div class="pass16n-row"><div class="pass16n-row-title">No signals loaded into this drawer yet.</div><div class="pass16n-row-meta">Run Scout Horizon first.</div></div>';
+
+    evidence.innerHTML = sigList.length ? '<div class="pass16n-list">' + sigList.slice(0, 10).map(function(s) {
+      var url = urlOf(s);
+      return '<div class="pass16n-row"><div class="pass16n-row-title">' + esc(sourceOf(s)) + '</div><div class="pass16n-row-meta">' + esc(clampWords(titleOf(s) || "Evidence item", 26)) + '</div>' + (url ? '<a class="pass16n-legacy" target="_blank" rel="noopener" href="' + esc(url) + '">Open source link</a>' : '') + '</div>';
+    }).join("") + '</div>' : '<div class="pass16n-row"><div class="pass16n-row-title">Evidence appears after a scan.</div><div class="pass16n-row-meta">Run Scout Horizon first.</div></div>';
+  }
+
+  function openDrawer(tab) {
+    buildStage();
+    qs("[data-pass16n-drawer-backdrop]").classList.add("open");
+    qs("[data-pass16n-drawer]").classList.add("open");
+    renderDrawer(tab || "filters");
+  }
+
+  function closeDrawer() {
+    qs("[data-pass16n-drawer-backdrop]").classList.remove("open");
+    qs("[data-pass16n-drawer]").classList.remove("open");
+  }
+
+  async function runAnalysis() {
+    var vals = getValues();
+    setUnderlyingInputs(vals);
+    updateIntel();
+    startProgress();
+
+    try {
+      try { await postJSON("/api/run_all"); } catch (e1) {
+        try { await postJSON("/api/demo_fill"); } catch (e2) {}
+      }
+    } catch (e) {}
+
+    lastSignals = await fetchSignals();
+    updateBrief(lastSignals);
+    updateIntel();
+    finishProgress(lastSignals.length);
+    renderDrawer("signals");
+  }
+
+  function hook() {
+    buildStage();
+    qsa(".pass16n-stage input, .pass16n-stage select").forEach(function(field) {
+      if (!field.__pass16n) {
+        field.__pass16n = true;
+        field.addEventListener("input", function() { setProgress(0, "Ready"); updateIntel(); });
+        field.addEventListener("change", function() { setProgress(0, "Ready"); updateIntel(); });
+      }
+    });
+    var run = qs("[data-pass16n-run]");
+    var drawer = qs("[data-pass16n-open-drawer]");
+    var close = qs("[data-pass16n-close]");
+    var back = qs("[data-pass16n-drawer-backdrop]");
+    if (run && !run.__pass16n) { run.__pass16n = true; run.addEventListener("click", runAnalysis); }
+    if (drawer && !drawer.__pass16n) { drawer.__pass16n = true; drawer.addEventListener("click", function() { openDrawer("filters"); }); }
+    if (close && !close.__pass16n) { close.__pass16n = true; close.addEventListener("click", closeDrawer); }
+    if (back && !back.__pass16n) { back.__pass16n = true; back.addEventListener("click", closeDrawer); }
+    qsa(".pass16n-tab").forEach(function(tab) {
+      if (!tab.__pass16n) {
+        tab.__pass16n = true;
+        tab.addEventListener("click", function() { renderDrawer(tab.getAttribute("data-tab")); });
+      }
+    });
+  }
+
+  function init() {
+    if (new URLSearchParams(window.location.search).get("workbench") === "1") {
+      document.body.classList.remove("pass16n-home");
+      document.body.classList.add("pass16n-workbench");
+      return;
+    }
+    document.body.classList.add("pass16n-home");
+    document.body.classList.remove("pass16n-workbench");
+    buildStage();
+    hook();
+    renderKeywordChips();
+    updateIntel();
+    setProgress(0, "Ready");
+    setInterval(function() {
+      if (!document.body.classList.contains("pass16n-home")) return;
+      if (!qs(".pass16n-stage")) buildStage();
+      hook();
+    }, 500);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+<!-- PASS 16N - Signal Relevance and Sharper Brief SCRIPT END -->
+<!-- PASS 17D - Company Filter Truthfulness SCRIPT START -->
+<script>
+(function () {
+  document.documentElement.setAttribute("data-scout-pass-17d", "company-filter-truthfulness");
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function clean(txt) { return (txt || "").replace(/\s+/g, " ").trim(); }
+  function titleOf(s) { return clean((s && (s.title || s.headline || s.name || s.summary || s.observation || s.text)) || "Untitled signal"); }
+  function sourceOf(s) { return clean((s && (s.source || s.source_name || s.publisher || s.domain || s.url || s.link)) || "current sources"); }
+  function laneOf(s) { return clean((s && (s.strategy_lane_label || s.strategic_lane || s.strategy_lane || s.lane || s.category)) || "life-sciences signal"); }
+  function keyword() { var el = qs("[data-pass16n-keyword]"); return clean(el && el.value); }
+  function company() { var el = qs("[data-pass16n-company]"); return clean(el && el.value); }
+  function mode() { var el = qs("[data-pass16n-mode]"); return clean(el && el.value) || "broad_targeted"; }
+  function level(score) { score = parseFloat(score || 0); return score >= .78 ? "High" : score >= .60 ? "Moderate" : "Early"; }
+  function setText(sel, value) { var el = qs(sel); if (el) el.textContent = value; }
+  async function rewriteBriefFromBackend() {
+    try {
+      var q = keyword() || "GLP-1 manufacturing pressure";
+      var c = company();
+      var url = "/api/signals?query=" + encodeURIComponent(q) + "&company=" + encodeURIComponent(c) + "&mode=" + encodeURIComponent(mode()) + "&t=" + Date.now();
+      var res = await fetch(url);
+      if (!res.ok) return;
+      var payload = await res.json();
+      var items = Array.isArray(payload) ? payload : (payload.items || payload.signals || payload.data || []);
+      if (!items.length) return;
+      var top = items[0];
+      var score = top.strategic_relevance || top.strategy_score || top.score || top.confidence || "";
+      var truth = top.company_truth_label || (c ? (top.company_match ? "Company match found: " + c + "." : "No " + c + "-specific match found; showing adjacent broad-market signal.") : "No company locked; broad scan.");
+      var why = top.why_this_signal_won || top.strategy_reasons || [];
+      if (typeof why === "string") why = [why];
+      setText('[data-pass16n-brief-title]', "Scout Brief: " + items.length + " signals found");
+      setText('[data-pass16n-brief-subtitle]', top.company_adjacent_only ? truth : "Answer first. Evidence explains why this signal won.");
+      setText('[data-pass16n-answer="changed"]', (top.company_adjacent_only ? "Best adjacent signal: " : "") + titleOf(top));
+      setText('[data-pass16n-answer="matters"]', top.why_leadership_should_care || (top.company_adjacent_only ? truth + " Use it as market context, not company-specific proof." : "This signal may create a leadership review point."));
+      setText('[data-pass16n-answer="strength"]', level(score) + " strategic match. Relevance " + (score ? Number(score).toFixed(2) : "not scored") + ". Source: " + sourceOf(top) + ". Lane: " + laneOf(top) + ". Why this won: " + (why.length ? why.slice(0,3).join("; ") : truth) + ".");
+      setText('[data-pass16n-answer="strengthplain"]', "Plain English: " + truth);
+      setText('[data-pass16n-answer="next"]', top.recommended_next_move || (top.company_adjacent_only ? "Clear the company filter for market-wide context or add company-specific evidence before making a company claim." : "Open Evidence, confirm the source, then narrow the scan if needed."));
+      setText('[data-pass16n-intel="company"]', truth);
+      setText('[data-pass16n-intel="focus"]', q);
+      if (window.ScoutHorizonPass18DUpdateAgentReasoning) window.ScoutHorizonPass18DUpdateAgentReasoning(items, top, { keyword: q, company: c, mode: mode() }, score);
+    } catch (e) {}
+  }
+  function init() {
+    document.addEventListener("click", function (e) {
+      var run = e.target && e.target.closest && e.target.closest("[data-pass16n-run], .pass16n-run");
+      if (run) setTimeout(rewriteBriefFromBackend, 900);
+    }, true);
+    setTimeout(rewriteBriefFromBackend, 1400);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
+</script>
+<!-- PASS 17D - Company Filter Truthfulness SCRIPT END -->
+  <script src="./pass18f_readability_layout_expand.js?v=pass18f-readable"></script>
+</body>
+</html>

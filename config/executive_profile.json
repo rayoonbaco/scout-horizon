@@ -1,0 +1,93 @@
+{
+  "name": "Executive Leader",
+  "mode": "Executive Mode",
+  "regions": [
+    "MA",
+    "Raleigh/Charlotte",
+    "Eastern PA/NJ",
+    "SoCal",
+    "Bay Area",
+    "Columbus",
+    "Chicago"
+  ],
+  "clients": [
+    "Lilly",
+    "Amgen",
+    "Takeda",
+    "Sanofi",
+    "Genentech",
+    "Lonza",
+    "AstraZeneca",
+    "Moderna",
+    "Pfizer"
+  ],
+  "competitors": [
+    "E-Tech Group",
+    "Siemens",
+    "JCI",
+    "Harris Mechanical",
+    "Hoffman Building Tech",
+    "Exyte"
+  ],
+  "watchlist": [
+    "CRB",
+    "IPS",
+    "Jacobs"
+  ],
+  "service_lines": [
+    "BAS/BMS/Automation (GMP)",
+    "GMP validation",
+    "controls integration/network architecture",
+    "OT cybersecurity",
+    "FEL/design-assist"
+  ],
+  "decision_lenses": [
+    {
+      "id": "ALL",
+      "label": "All signals",
+      "lanes": [],
+      "min_score": 0
+    },
+    {
+      "id": "GROW",
+      "label": "Where to grow",
+      "lanes": [
+        "market_signals",
+        "construction_capex",
+        "science_trends",
+        "competitive_intel"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "HIRE",
+      "label": "Where to hire",
+      "lanes": [
+        "hiring_signals",
+        "construction_capex",
+        "market_signals"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "EXPOSED",
+      "label": "Where I'm exposed",
+      "lanes": [
+        "margin_protection",
+        "regulatory",
+        "cybersecurity"
+      ],
+      "min_score": 0
+    },
+    {
+      "id": "CYBER",
+      "label": "OT cyber mandates",
+      "lanes": [
+        "cybersecurity",
+        "regulatory"
+      ],
+      "min_score": 0
+    }
+  ],
+  "public_demo_safe": true
+}

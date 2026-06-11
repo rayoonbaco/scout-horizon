@@ -1,0 +1,52 @@
+[
+  {
+    "id": "factiva_premium",
+    "label": "Factiva (Dow Jones) - premium news & company coverage",
+    "type": "premium_api",
+    "access": "paid",
+    "url_or_endpoint": "{FACTIVA_API_OR_EXPORT_ENDPOINT}",
+    "query_template": "{ACCOUNT_QUERY} AND ({TOPIC_QUERY}) AND ({REGION_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "margin_protection",
+      "construction_capex",
+      "regulatory",
+      "cybersecurity"
+    ],
+    "tags": [
+      "premium",
+      "news",
+      "licensing_controls_required"
+    ],
+    "reliability": 0.88,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Vendor quota + caching; store only permitted fields; audit exports.",
+    "dedupe_key_strategy": "vendor_content_id",
+    "normalization_mapping_notes": "Normalize licensed metadata to event schema; evidence=[content_id]."
+  },
+  {
+    "id": "alphasense_premium",
+    "label": "AlphaSense - earnings, filings, expert calls, news (licensed)",
+    "type": "premium_api",
+    "access": "paid",
+    "url_or_endpoint": "{ALPHASENSE_API_ENDPOINT}",
+    "query_template": "{ACCOUNT_QUERY} AND ({TOPIC_QUERY})",
+    "lanes": [
+      "market_signals",
+      "competitive_intel",
+      "margin_protection",
+      "construction_capex"
+    ],
+    "tags": [
+      "premium",
+      "transcripts",
+      "compliance_required"
+    ],
+    "reliability": 0.9,
+    "update_frequency": "daily",
+    "rate_limit_notes": "Respect seat/export limits; cache metadata; avoid storing full text unless allowed.",
+    "dedupe_key_strategy": "document_id",
+    "normalization_mapping_notes": "Normalize permitted metadata to event schema."
+  }
+]
