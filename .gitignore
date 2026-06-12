@@ -23,3 +23,16 @@ PASS*_SMOKE_TEST.bat
 
 .DS_Store
 Thumbs.db
+
+# Local launcher/workbench files not needed for public Render deploy
+DAILY_REFRESH.bat
+RUN_OPERATION_RETRIEVE_GOMEZ.bat
+RUN_RADAR.bat
+RUN_STRATEGIC_RADAR_*.bat
+VIEW_RADAR.bat
+fix_viewer_cache.py
+make_viewer_signals.py
+pass*_installer.py
+run_radar.py
+smoke_test.bat
+*.bak

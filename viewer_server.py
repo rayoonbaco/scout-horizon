@@ -504,6 +504,42 @@ async def unhandled_exception_handler(_, exc: Exception):
 # PASS 14 - Source Truth API START
 SOURCE_TRUTH_PATH = ROOT / "outputs" / "source_truth_audit.json"
 
+SOURCE_TRUTH_FALLBACK = {
+    "ok": True,
+    "mode": "fallback_source_truth",
+    "project": "Scout Horizon",
+    "positioning": "demo-safe public/current-source-oriented decision-support prototype",
+    "summary": "Scout Horizon organizes public, configurable, and demo-safe life-sciences signals into executive briefs, confidence cues, source posture notes, and next-action review.",
+    "what_is_real_current_source_oriented": [
+        "The dashboard and API are live on Render.",
+        "The app can read bundled/cache signal data and configured public-source registries.",
+        "The workflow supports public/current-source-oriented review using RSS/API/manual-source style inputs when configured.",
+        "The Scout Brief, scoring, filtering, evidence posture, and next-action language are generated from the app workflow."
+    ],
+    "what_is_demo_safe_or_sample_based": [
+        "Some bundled signals and showcase examples are demo-safe/sample or curated fallback data.",
+        "The GLP-1 Manufacturing Pressure Radar should be presented as a demonstration workflow, not a private market-intelligence feed.",
+        "Manual CSV/cache inputs should be described as curated inputs unless freshly regenerated and verified."
+    ],
+    "claims_to_avoid": [
+        "Do not claim enterprise-ready.",
+        "Do not claim compliance-certified.",
+        "Do not claim GxP-validated.",
+        "Do not claim fully real-time.",
+        "Do not claim connection to private customer systems.",
+        "Do not imply endorsement by any named person or company unless separately approved."
+    ],
+    "safe_language": [
+        "public-signal workflow",
+        "current-source-oriented",
+        "demo-safe",
+        "refresh-ready",
+        "decision-support prototype",
+        "validated facility readiness lens"
+    ],
+    "recommended_review": "Use this endpoint as a public honesty layer. For production use, generate and review a fresh source truth audit before sharing claims externally."
+}
+
 @app.get("/api/source_truth")
 def api_source_truth():
     if SOURCE_TRUTH_PATH.exists():
@@ -511,7 +547,7 @@ def api_source_truth():
             return JSONResponse(json.loads(SOURCE_TRUTH_PATH.read_text(encoding="utf-8")))
         except Exception as exc:
             return JSONResponse({"ok": False, "error": str(exc)}, status_code=500)
-    return JSONResponse({"ok": False, "error": "source truth audit has not been generated yet"}, status_code=404)
+    return JSONResponse(SOURCE_TRUTH_FALLBACK)
 # PASS 14 - Source Truth API END
 
 # PASS 17 - Strategic Brain Audit API START
